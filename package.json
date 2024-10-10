@@ -9,7 +9,9 @@
     "test": "jest --setupFiles dotenv/config",
     "test:watch": "jest --watchAll --coverage --setupFiles dotenv/config",
     "migrate": "node-pg-migrate",
-    "migrate:test": "node-pg-migrate --envPath .test.env"
+    "migrate:test": "node-pg-migrate --envPath .test.env",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "keywords": [],
   "author": "",
