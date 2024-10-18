@@ -9,6 +9,7 @@
     "test": "jest --setupFiles dotenv/config -i",
     "test:watch:change": "jest --watch --setupFiles dotenv/config -i",
     "test:watch": "jest --watchAll --coverage --setupFiles dotenv/config -i",
+    "test:e2e": "newman run ./tests/e2e/postman_collection.json -e ./tests/e2e/postman_environment.json",
     "migrate": "node-pg-migrate",
     "migrate:test": "node-pg-migrate -f config/database/test.json",
     "lint": "eslint",
@@ -32,6 +33,7 @@
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.23.4",
     "jest": "^27.0.6",
+    "newman": "^6.2.1",
     "node-pg-migrate": "^5.10.0",
     "nodemon": "^2.0.9"
   }
