@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-class NewThread {
+class Thread {
   constructor(payload) {
     this._verifyPayload(payload);
 
@@ -29,4 +29,4 @@ class NewThread {
   }
 }
 
-module.exports = NewThread;
+module.exports = Thread;
