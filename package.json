@@ -12,8 +12,8 @@
     "test:e2e": "newman run ./tests/e2e/postman_collection.json -e ./tests/e2e/postman_environment.json",
     "migrate": "node-pg-migrate",
     "migrate:test": "node-pg-migrate -f config/database/test.json",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "keywords": [],
   "author": "",
