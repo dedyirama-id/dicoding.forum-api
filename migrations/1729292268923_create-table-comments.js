@@ -22,7 +22,6 @@ exports.up = (pgm) => {
     },
     parent_comment_id: {
       type: 'VARCHAR(50)',
-      // parent_comment_id seharusnya optional (nullable)
       notNull: false,
     },
     created_at: {
@@ -37,7 +36,6 @@ exports.up = (pgm) => {
     },
   });
 
-  // Constraint foreign key ke tabel users
   pgm.addConstraint('comments', 'fk_user_id_users.id', {
     foreignKeys: {
       columns: 'user_id',
@@ -46,7 +44,6 @@ exports.up = (pgm) => {
     },
   });
 
-  // Constraint foreign key ke tabel threads
   pgm.addConstraint('comments', 'fk_thread_id_threads.id', {
     foreignKeys: {
       columns: 'thread_id',
@@ -55,7 +52,6 @@ exports.up = (pgm) => {
     },
   });
 
-  // Constraint foreign key untuk parent_comment_id
   pgm.addConstraint('comments', 'fk_parent_comment_id_comments.id', {
     foreignKeys: {
       columns: 'parent_comment_id',
