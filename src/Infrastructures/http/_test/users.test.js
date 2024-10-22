@@ -4,6 +4,10 @@ const container = require('../../container');
 const createServer = require('../createServer');
 
 describe('/users endpoint', () => {
+  beforeAll(async () => {
+    await UsersTableTestHelper.cleanTable();
+  });
+
   afterAll(async () => {
     await pool.end();
   });

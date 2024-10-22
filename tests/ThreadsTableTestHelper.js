@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 const pool = require('../src/Infrastructures/database/postgres/pool');
 
-const ThreadTableHelper = {
+const ThreadsTableTestHelper = {
   async cleanTable() {
     await pool.query('DELETE FROM threads WHERE 1=1');
   },
@@ -17,4 +17,4 @@ const ThreadTableHelper = {
   },
 };
 
-module.exports = ThreadTableHelper;
+module.exports = ThreadsTableTestHelper;

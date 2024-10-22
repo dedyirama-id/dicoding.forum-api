@@ -4,9 +4,9 @@ describe('Thread entities', () => {
   it('should throw error when payload not contain needed property', () => {
     // Arrange
     const payload = {
-      id: 'thread-xxx',
+      id: 'thread-123',
       body: 'lorem ipsum',
-      user_id: 'user-xxx',
+      user_id: 'user-123',
     };
 
     // Action & Assert
@@ -16,10 +16,10 @@ describe('Thread entities', () => {
   it('should throw error when payload not meet data type specification', () => {
     // Arrange
     const payload = {
-      id: 'title',
+      id: 123,
       title: 'title',
       body: 123,
-      user_id: 'user-xxx',
+      user_id: 'user-123',
     };
 
     // Action & Assert
@@ -29,10 +29,10 @@ describe('Thread entities', () => {
   it('should create Thread entities correctly', () => {
     // Arrange
     const payload = {
-      id: 'thread-xxx',
+      id: 'thread-123',
       title: 'new title',
       body: 'lorem ipsum',
-      user_id: 'user-xxx',
+      user_id: 'user-123',
     };
 
     // Action

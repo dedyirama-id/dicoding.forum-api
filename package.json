@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/app.js",
-    "start:dev": "nodemon src/app.js",
+    "start": "cross-env NODE_ENV=production node src/app.js",
+    "start:dev": "cross-env NODE_ENV=development nodemon src/app.js",
     "test": "jest --coverage --setupFiles dotenv/config -i",
     "test:watch:change": "jest --watch --coverage --setupFiles dotenv/config -i",
     "test:watch": "jest --watchAll --coverage --setupFiles dotenv/config -i",
@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@types/jest": "^26.0.24",
+    "cross-env": "^7.0.3",
     "eslint": "^7.30.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.23.4",
