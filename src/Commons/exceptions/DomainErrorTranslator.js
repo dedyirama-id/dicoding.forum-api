@@ -20,6 +20,8 @@ DomainErrorTranslator._directories = {
   'ADD_THREAD_USE_CASE.INVALID_USER_ID': new InvariantError('thread owner tidak terdaftar'),
   'NEW_THREAD.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('harus mengirimkan title, body, dan owner'),
   'NEW_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('title, body, dan owner harus string'),
+  'NEW_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('harus mengirimkan content, owner, dan threadId'),
+  'NEW_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('content, userId, dan threadId harus string'),
 };
 
 module.exports = DomainErrorTranslator;
