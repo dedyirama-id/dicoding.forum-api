@@ -23,6 +23,15 @@ const UsersTableTestHelper = {
     return result.rows;
   },
 
+  async getAllUsers() {
+    const query = {
+      text: 'SELECT * FROM users',
+    };
+
+    const result = await pool.query(query);
+    return result.rows;
+  },
+
   async cleanTable() {
     await pool.query('DELETE FROM users WHERE 1=1');
   },

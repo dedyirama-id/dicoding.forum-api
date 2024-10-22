@@ -24,7 +24,7 @@ describe('AddThreadUseCase', () => {
       userRepository: mockUserRepository,
     });
 
-    await expect(addThreadUseCase.execute(useCasePayload)).rejects.toThrowError('ADD_THREAD_USE_CASE.INVALID_USER_ID');
+    await expect(addThreadUseCase.execute(useCasePayload)).rejects.toThrowError('USER_REPOSITORY.USER_NOT_FOUND');
   });
 
   it('should orchestrating the add thread action correctly', async () => {
