@@ -7,43 +7,43 @@ describe('NewComment entities', () => {
       owner: 'user-123',
       threadId: 'thread-123',
       parentCommentId: 'comment-123',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     const payload2 = {
       content: 'lorem ipsum',
       threadId: 'thread-123',
       parentCommentId: 'comment-123',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     const payload3 = {
       content: 'lorem ipsum',
       owner: 'user-123',
       parentCommentId: 'comment-123',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     const payload4 = {
       content: 'lorem ipsum',
       owner: 'user-123',
       threadId: 'thread-123',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     const payload5 = {
       content: 'lorem ipsum',
       owner: 'user-123',
       threadId: 'thread-123',
       parentCommentId: 'comment-123',
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date(),
     };
     const payload6 = {
       content: 'lorem ipsum',
       owner: 'user-123',
       threadId: 'thread-123',
       parentCommentId: 'comment-123',
-      createdAt: new Date().toISOString(),
+      createdAt: new Date(),
     };
 
     // Action & Assert

@@ -85,8 +85,8 @@ describe('AddCommentUseCase', () => {
       user_id: 'user-123',
       thread_id: 'thread-123',
       parent_comment_id: null,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
+      created_at: new Date(),
+      updated_at: new Date(),
     });
 
     const mockUserRepository = new UserRepository();
@@ -113,8 +113,8 @@ describe('AddCommentUseCase', () => {
       user_id: 'user-123',
       thread_id: 'thread-123',
       parent_comment_id: null,
-      created_at: new Date(addedComment.createdAt).toISOString(),
-      updated_at: new Date(addedComment.updatedAt).toISOString(),
+      created_at: new Date(addedComment.createdAt),
+      updated_at: new Date(addedComment.updatedAt),
     }));
     expect(mockCommentRepository.addComment).toBeCalledWith(new NewComment({
       content: 'lorem ipsum',
