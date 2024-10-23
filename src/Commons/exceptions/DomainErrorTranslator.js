@@ -22,6 +22,8 @@ DomainErrorTranslator._directories = {
   'NEW_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('title, body, dan owner harus string'),
   'NEW_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('harus mengirimkan content, owner, dan threadId'),
   'NEW_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('content, userId, dan threadId harus string'),
+  'USER_REPOSITORY.USER_NOT_FOUND': new InvariantError('user tidak terdaftar'),
+  'THREAD_REPOSITORY.USER_NOT_FOUND': new InvariantError('thread tidak terdaftar'),
 };
 
 module.exports = DomainErrorTranslator;

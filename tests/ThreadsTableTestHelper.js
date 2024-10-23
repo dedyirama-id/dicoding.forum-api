@@ -27,6 +27,15 @@ const ThreadsTableTestHelper = {
 
     await pool.query(query);
   },
+
+  async getAllThreads() {
+    const query = {
+      text: 'SELECT * FROM threads',
+    };
+
+    const result = await pool.query(query);
+    return result.rows;
+  },
 };
 
 module.exports = ThreadsTableTestHelper;
