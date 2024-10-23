@@ -6,7 +6,7 @@ const users = require('../../Interfaces/http/api/users');
 const authentications = require('../../Interfaces/http/api/authentications');
 const threads = require('../../Interfaces/http/api/threads');
 
-const createServer = async (container) => {
+const createServer = async (container, printLog = true) => {
   const server = Hapi.server({
     host: process.env.HOST,
     port: process.env.PORT,
@@ -69,12 +69,16 @@ const createServer = async (container) => {
       }
 
       // penanganan server error sesuai kebutuhan
+      /* istanbul ignore next */
+      if (printLog) {
+        console.log('⚠ ~ server error:\n', translatedError);
+      }
+
       const newResponse = h.response({
         status: 'error',
         message: 'terjadi kegagalan pada server kami',
       });
       newResponse.code(500);
-      console.log('⚠ ~ server error:\n', translatedError);
       return newResponse;
     }
 

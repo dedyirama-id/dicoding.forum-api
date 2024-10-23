@@ -1,20 +1,19 @@
-const ThreadTableHelper = require('../../../../tests/ThreadsTableTestHelper');
+const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const NewThread = require('../../../Domains/threads/entities/NewThread');
 const Thread = require('../../../Domains/threads/entities/Thread');
-const RegisterUser = require('../../../Domains/users/entities/RegisterUser');
 const pool = require('../../database/postgres/pool');
 const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres');
 
 describe('ThreadRepository postgres', () => {
   beforeAll(async () => {
-    await ThreadTableHelper.cleanTable();
+    await ThreadsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
   });
 
   afterEach(async () => {
-    await ThreadTableHelper.cleanTable();
+    await ThreadsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
   });
 
@@ -30,21 +29,16 @@ describe('ThreadRepository postgres', () => {
         title: 'New title',
         body: 'lorem ipsum',
       });
-      const user = new RegisterUser({
-        username: 'dicoding',
-        fullname: 'dicoding indonesia',
-        password: 'secret',
-      });
 
       const fakeIdGenerator = () => '123';
       const threadRepository = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
-      await UsersTableTestHelper.addUser(user);
-      await threadRepository.addThread(newThread);
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
 
       // Action
-      const addedThreads = await ThreadTableHelper.findThreadById('thread-123');
+      await threadRepository.addThread(newThread);
 
       // Assert
+      const addedThreads = await ThreadsTableTestHelper.findThreadById('thread-123');
       expect(addedThreads).toHaveLength(1);
     });
 
@@ -57,7 +51,7 @@ describe('ThreadRepository postgres', () => {
       });
       const fakeIdGenerator = () => '123';
       const threadRepository = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
-      await UsersTableTestHelper.addUser({});
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
 
       // Action
       const addedThread = await threadRepository.addThread(newThread);
@@ -67,7 +61,9 @@ describe('ThreadRepository postgres', () => {
         id: 'thread-123',
         title: newThread.title,
         body: newThread.body,
-        user_id: newThread.user_id,
+        user_id: newThread.owner,
+        created_at: addedThread.createdAt,
+        updated_at: addedThread.updatedAt,
       }));
     });
   });
@@ -91,8 +87,8 @@ describe('ThreadRepository postgres', () => {
       });
       const fakeIdGenerator = () => '123';
       const threadRepository = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
-      await UsersTableTestHelper.addUser({});
-      await ThreadTableHelper.addThread(newThread);
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread(newThread);
 
       // Action
       const thread = await threadRepository.getThreadById('thread-123');
@@ -102,7 +98,9 @@ describe('ThreadRepository postgres', () => {
         id: 'thread-123',
         title: newThread.title,
         body: newThread.body,
-        user_id: newThread.user_id,
+        user_id: newThread.owner,
+        created_at: thread.createdAt,
+        updated_at: thread.updatedAt,
       }));
     });
   });

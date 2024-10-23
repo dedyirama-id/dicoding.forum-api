@@ -163,6 +163,7 @@ describe('Comment entities', () => {
 
     // Assert
     expect(comment).toBeInstanceOf(Comment);
+    expect(comment.id).toEqual(payload.id);
     expect(comment.content).toEqual(payload.content);
     expect(comment.owner).toEqual(payload.user_id);
     expect(comment.threadId).toEqual(payload.thread_id);

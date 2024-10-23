@@ -22,7 +22,6 @@ class Comment {
       updated_at: updatedAt,
     } = payload;
 
-    // Validasi kehadiran properti
     if (
       !id
       || !content

@@ -104,8 +104,8 @@ describe('NewComment entities', () => {
     // Assert
     expect(newComment).toBeInstanceOf(NewComment);
     expect(newComment.content).toEqual(payload.content);
-    expect(newComment.user_id).toEqual(payload.owner);
-    expect(newComment.thread_id).toEqual(payload.threadId);
-    expect(newComment.parent_comment_id).toEqual(payload.parentCommentId);
+    expect(newComment.owner).toEqual(payload.owner);
+    expect(newComment.threadId).toEqual(payload.threadId);
+    expect(newComment.parentCommentId).toEqual(payload.parentCommentId);
   });
 });

@@ -57,5 +57,6 @@ describe('AddUserUseCase', () => {
       password: 'encrypted_password',
       fullname: useCasePayload.fullname,
     }));
+    expect(mockUserRepository.addUser).toBeCalledTimes(1);
   });
 });

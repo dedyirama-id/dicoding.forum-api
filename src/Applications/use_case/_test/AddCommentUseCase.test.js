@@ -72,6 +72,8 @@ describe('AddCommentUseCase', () => {
       user_id: 'user-123',
       title: 'new title',
       body: 'lorem ipsum',
+      created_at: new Date(),
+      updated_at: new Date(),
     });
     const mockRegisteredUser = new RegisteredUser({
       id: 'user-123',

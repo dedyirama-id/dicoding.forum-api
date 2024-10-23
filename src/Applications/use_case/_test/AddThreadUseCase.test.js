@@ -41,6 +41,8 @@ describe('AddThreadUseCase', () => {
       user_id: useCasePayload.owner,
       title: useCasePayload.title,
       body: useCasePayload.body,
+      created_at: new Date(),
+      updated_at: new Date(),
     });
     const mockRegisteredUser = new RegisteredUser({
       id: 'user-123',
@@ -69,11 +71,14 @@ describe('AddThreadUseCase', () => {
       user_id: 'user-123',
       title: useCasePayload.title,
       body: useCasePayload.body,
+      created_at: mockThread.createdAt,
+      updated_at: mockThread.updatedAt,
     }));
     expect(mockThreadRepository.addThread).toBeCalledWith(new NewThread({
       owner: useCasePayload.owner,
       title: useCasePayload.title,
       body: useCasePayload.body,
     }));
+    expect(mockThreadRepository.addThread).toBeCalledTimes(1);
   });
 });

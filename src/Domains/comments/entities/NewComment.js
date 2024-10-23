@@ -3,9 +3,9 @@ class NewComment {
     this._verifyPayload(payload);
 
     this.content = payload.content;
-    this.user_id = payload.owner;
-    this.thread_id = payload.threadId;
-    this.parent_comment_id = payload.parentCommentId;
+    this.owner = payload.owner;
+    this.threadId = payload.threadId;
+    this.parentCommentId = payload.parentCommentId;
   }
 
   _verifyPayload(payload) {

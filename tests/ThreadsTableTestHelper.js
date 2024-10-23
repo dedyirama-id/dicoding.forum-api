@@ -18,11 +18,11 @@ const ThreadsTableTestHelper = {
   },
 
   async addThread({
-    id = 'thread-123', user_id = 'user-123', title = 'new title', body = 'lorem ipsum',
+    id = 'thread-123', owner = 'user-123', title = 'new title', body = 'lorem ipsum',
   }) {
     const query = {
       text: 'INSERT INTO threads VALUES($1, $2, $3, $4)',
-      values: [id, user_id, title, body],
+      values: [id, owner, title, body],
     };
 
     await pool.query(query);

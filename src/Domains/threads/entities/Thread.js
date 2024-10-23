@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 class Thread {
   constructor(payload) {
     this._verifyPayload(payload);
@@ -7,14 +6,16 @@ class Thread {
     this.title = payload.title;
     this.body = payload.body;
     this.owner = payload.user_id;
+    this.createdAt = payload.created_at;
+    this.updatedAt = payload.updated_at;
   }
 
   _verifyPayload(payload) {
     const {
-      id, title, body, user_id,
+      id, title, body, user_id: userId, created_at: createdAt, updated_at: updatedAt,
     } = payload;
 
-    if (!id || !title || !body || !user_id) {
+    if (!id || !title || !body || !userId) {
       throw new Error('THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
     }
 
@@ -22,7 +23,9 @@ class Thread {
       typeof id !== 'string'
       || typeof title !== 'string'
       || typeof body !== 'string'
-      || typeof user_id !== 'string'
+      || typeof userId !== 'string'
+      || createdAt instanceof Date === false
+      || updatedAt instanceof Date === false
     ) {
       throw new Error('THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
