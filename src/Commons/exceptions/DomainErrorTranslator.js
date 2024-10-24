@@ -1,5 +1,6 @@
 const AuthorizationError = require('./AuthorizationError');
 const InvariantError = require('./InvariantError');
+const NotFoundError = require('./NotFoundError');
 
 const DomainErrorTranslator = {
   translate(error) {
@@ -43,6 +44,10 @@ DomainErrorTranslator._directories = {
   'DELETE_COMMENT_USE_CASE.USER_ID_DONT_MATCH': new AuthorizationError('user bukan pemilik komentar'),
   'DELETE_COMMENT_USE_CASE.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('harus mengirimkan userId dan commentId'),
   'DELETE_COMMENT_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('userId dan commentId harus string'),
+
+  // GetThreadDetailsUseCase
+  'GET_THREAD_DETAILS_USE_CASE.NOT_CONTAIN_THREAD_ID': new NotFoundError('threadId tidak terdaftar'),
+  'GET_THREAD_DETAILS_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('threadId harus string'),
 };
 
 module.exports = DomainErrorTranslator;

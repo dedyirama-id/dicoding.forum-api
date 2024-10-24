@@ -15,6 +15,20 @@ const CommentsTableTestHelper = {
     const result = await pool.query(query);
     return result.rows;
   },
+
+  async addComment({
+    id = 'comment-123',
+    content = 'comment 1',
+    userId = 'user-123',
+    threadId = 'thread-123',
+  }) {
+    const query = {
+      text: 'INSERT INTO comments VALUES($1, $2, $3, $4)',
+      values: [id, content, userId, threadId],
+    };
+
+    await pool.query(query);
+  },
 };
 
 module.exports = CommentsTableTestHelper;

@@ -68,40 +68,33 @@ describe('ThreadRepository postgres', () => {
     });
   });
 
-  describe('getThreadByIdFunction function', () => {
-    it('should throw NotFoundError when thread not found', async () => {
+  describe('getThreadById function', () => {
+    it('should return thread details correctly', async () => {
       // Arrange
-      const fakeIdGenerator = () => '123';
-      const threadRepository = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
+      const threadRepository = new ThreadRepositoryPostgres(pool, () => '123');
 
-      // Action & Assert
-      await expect(threadRepository.getThreadById('thread-123')).rejects.toThrowError(NotFoundError);
-    });
-
-    it('should return thread correctly', async () => {
-      // Arrange
-      const newThread = new NewThread({
-        owner: 'user-123',
-        title: 'New title',
-        body: 'lorem ipsum',
+      await UsersTableTestHelper.addUser({ id: 'user-123', username: 'userA' });
+      await ThreadsTableTestHelper.addThread({
+        id: 'thread-123', title: 'Thread Title', body: 'Thread Body', owner: 'user-123',
       });
-      const fakeIdGenerator = () => '123';
-      const threadRepository = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
-      await UsersTableTestHelper.addUser({ id: 'user-123' });
-      await ThreadsTableTestHelper.addThread(newThread);
 
       // Action
       const thread = await threadRepository.getThreadById('thread-123');
 
       // Assert
-      expect(thread).toStrictEqual(new Thread({
-        id: 'thread-123',
-        title: newThread.title,
-        body: newThread.body,
-        user_id: newThread.owner,
-        created_at: thread.createdAt,
-        updated_at: thread.updatedAt,
-      }));
+      expect(thread).toBeDefined();
+      expect(thread.id).toBe('thread-123');
+      expect(thread.title).toBe('Thread Title');
+      expect(thread.body).toBe('Thread Body');
+      expect(thread.username).toBe('userA');
+    });
+
+    it('should throw NotFoundError when thread is not found', async () => {
+      // Arrange
+      const threadRepository = new ThreadRepositoryPostgres(pool, () => '123');
+
+      // Action & Assert
+      await expect(threadRepository.getThreadById('invalid-thread')).rejects.toThrowError(NotFoundError);
     });
   });
 });

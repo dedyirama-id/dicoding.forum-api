@@ -172,4 +172,51 @@ describe('CommentRepositoryPostgres', () => {
       await expect(() => commentRepository.getCommentById('comment-123')).rejects.toThrowError(NotFoundError);
     });
   });
+
+  describe('getAllCommentsByThreadId function', () => {
+    it('should return all comments by thread id correctly', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const commentRepository = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+      await UsersTableTestHelper.addUser({ id: 'user-123', username: 'userA' });
+      await UsersTableTestHelper.addUser({ id: 'user-456', username: 'userB' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
+
+      await CommentsTableTestHelper.addComment({
+        id: 'comment-123', content: 'comment 1', threadId: 'thread-123', userId: 'user-123',
+      });
+      await CommentsTableTestHelper.addComment({
+        id: 'comment-456', content: 'comment 2', threadId: 'thread-123', userId: 'user-456',
+      });
+
+      // Action
+      const comments = await commentRepository.getAllCommentsByThreadId('thread-123');
+
+      // Assert
+      expect(comments).toHaveLength(2);
+      expect(comments[0].id).toBe('comment-123');
+      expect(comments[0].content).toBe('comment 1');
+      expect(comments[0].username).toBe('userA');
+
+      expect(comments[1].id).toBe('comment-456');
+      expect(comments[1].content).toBe('comment 2');
+      expect(comments[1].username).toBe('userB');
+    });
+
+    it('should return an empty array when there are no comments for the thread id', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const commentRepository = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
+
+      // Action
+      const comments = await commentRepository.getAllCommentsByThreadId('thread-123');
+
+      // Assert
+      expect(comments).toHaveLength(0);
+    });
+  });
 });
