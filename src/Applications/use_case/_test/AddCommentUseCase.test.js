@@ -89,6 +89,7 @@ describe('AddCommentUseCase', () => {
       parent_comment_id: null,
       created_at: new Date(),
       updated_at: new Date(),
+      is_delete: false,
     });
 
     const mockUserRepository = new UserRepository();
@@ -117,6 +118,7 @@ describe('AddCommentUseCase', () => {
       parent_comment_id: null,
       created_at: new Date(addedComment.createdAt),
       updated_at: new Date(addedComment.updatedAt),
+      is_delete: false,
     }));
     expect(mockCommentRepository.addComment).toBeCalledWith(new NewComment({
       content: 'lorem ipsum',

@@ -10,6 +10,7 @@ describe('Comment entities', () => {
       parent_comment_id: null,
       created_at: new Date(),
       updated_at: new Date(),
+      is_delete: false,
     };
     const payload2 = {
       id: 'comment-123',
@@ -18,6 +19,7 @@ describe('Comment entities', () => {
       parent_comment_id: null,
       created_at: new Date(),
       updated_at: new Date(),
+      is_delete: false,
     };
     const payload3 = {
       id: 'comment-123',
@@ -26,6 +28,7 @@ describe('Comment entities', () => {
       parent_comment_id: null,
       created_at: new Date(),
       updated_at: new Date(),
+      is_delete: false,
     };
     const payload4 = {
       id: 'comment-123',
@@ -34,6 +37,7 @@ describe('Comment entities', () => {
       parent_comment_id: null,
       created_at: new Date(),
       updated_at: new Date(),
+      is_delete: false,
     };
     const payload5 = {
       id: 'comment-123',
@@ -42,6 +46,7 @@ describe('Comment entities', () => {
       thread_id: 'thread-123',
       created_at: new Date(),
       updated_at: new Date(),
+      is_delete: false,
     };
     const payload6 = {
       id: 'comment-123',
@@ -50,6 +55,7 @@ describe('Comment entities', () => {
       thread_id: 'thread-123',
       parent_comment_id: null,
       updated_at: new Date(),
+      is_delete: false,
     };
     const payload7 = {
       id: 'comment-123',
@@ -58,6 +64,16 @@ describe('Comment entities', () => {
       thread_id: 'thread-123',
       parent_comment_id: null,
       created_at: new Date(),
+      is_delete: false,
+    };
+    const payload8 = {
+      id: 'comment-123',
+      content: 'lorem ipsum',
+      user_id: 'user-123',
+      thread_id: 'thread-123',
+      parent_comment_id: null,
+      created_at: new Date(),
+      updated_at: new Date(),
     };
 
     // Action & Assert
@@ -68,6 +84,7 @@ describe('Comment entities', () => {
     expect(() => new Comment(payload5)).not.toThrowError('COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
     expect(() => new Comment(payload6)).toThrowError('COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
     expect(() => new Comment(payload7)).toThrowError('COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
+    expect(() => new Comment(payload8)).toThrowError('COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
   });
 
   it('should throw error when payload does not meet data type specification', () => {
@@ -80,6 +97,7 @@ describe('Comment entities', () => {
       parent_comment_id: null,
       created_at: new Date(),
       updated_at: new Date(),
+      is_delete: false,
     };
     const payload2 = {
       id: 'thread-123',
@@ -89,6 +107,7 @@ describe('Comment entities', () => {
       parent_comment_id: null,
       created_at: new Date(),
       updated_at: new Date(),
+      is_delete: false,
     };
     const payload3 = {
       id: 'thread-123',
@@ -98,6 +117,7 @@ describe('Comment entities', () => {
       parent_comment_id: null,
       created_at: new Date(),
       updated_at: new Date(),
+      is_delete: false,
     };
     const payload4 = {
       id: 'thread-123',
@@ -107,6 +127,7 @@ describe('Comment entities', () => {
       parent_comment_id: null,
       created_at: new Date(),
       updated_at: new Date(),
+      is_delete: false,
     };
     const payload5 = {
       id: 'thread-123',
@@ -116,6 +137,7 @@ describe('Comment entities', () => {
       parent_comment_id: 123,
       created_at: new Date(),
       updated_at: new Date(),
+      is_delete: false,
     };
     const payload6 = {
       id: 'thread-123',
@@ -125,6 +147,7 @@ describe('Comment entities', () => {
       parent_comment_id: null,
       created_at: 123,
       updated_at: new Date(),
+      is_delete: false,
     };
     const payload7 = {
       id: 'comment-123',
@@ -134,6 +157,17 @@ describe('Comment entities', () => {
       parent_comment_id: null,
       created_at: new Date(),
       updated_at: 123,
+      is_delete: false,
+    };
+    const payload8 = {
+      id: 'comment-123',
+      content: 'lorem ipsum',
+      user_id: 'user-123',
+      thread_id: 'thread-123',
+      parent_comment_id: null,
+      created_at: new Date(),
+      updated_at: new Date(),
+      is_delete: 123,
     };
 
     // Action & Assert
@@ -144,6 +178,7 @@ describe('Comment entities', () => {
     expect(() => new Comment(payload5)).toThrowError('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
     expect(() => new Comment(payload6)).toThrowError('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
     expect(() => new Comment(payload7)).toThrowError('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    expect(() => new Comment(payload8)).toThrowError('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
   it('should create Comment entities correctly', () => {
@@ -156,6 +191,7 @@ describe('Comment entities', () => {
       parent_comment_id: null,
       created_at: new Date(),
       updated_at: new Date(),
+      is_delete: false,
     };
 
     // Action

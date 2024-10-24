@@ -9,6 +9,7 @@ class Comment {
     this.parentCommentId = payload.parent_comment_id;
     this.createdAt = payload.created_at;
     this.updatedAt = payload.updated_at;
+    this.isDelete = payload.is_delete;
   }
 
   _verifyPayload(payload) {
@@ -20,6 +21,7 @@ class Comment {
       parent_comment_id: parentCommentId,
       created_at: createdAt,
       updated_at: updatedAt,
+      is_delete: isDelete,
     } = payload;
 
     if (
@@ -29,6 +31,8 @@ class Comment {
       || !threadId
       || !createdAt
       || !updatedAt
+      || isDelete === undefined
+      || isDelete === null
     ) {
       throw new Error('COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
     }
@@ -41,6 +45,7 @@ class Comment {
       || (parentCommentId && typeof parentCommentId !== 'string')
       || createdAt instanceof Date === false
       || updatedAt instanceof Date === false
+      || typeof isDelete !== 'boolean'
     ) {
       throw new Error('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
