@@ -66,7 +66,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     const commentsWithReplies = comments.map((comment) => {
       const commentReplies = replies
         .filter((reply) => reply.parent_comment_id === comment.id)
-        .map((reply) => new GetComment(reply));
+        .map((reply) => new GetComment(reply, '**balasan telah dihapus**'));
 
       return {
         ...new GetComment(comment),
