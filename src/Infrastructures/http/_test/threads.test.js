@@ -591,4 +591,168 @@ describe('/threads endpoint', () => {
       expect(responseJson.message).toBeDefined();
     });
   });
+
+  describe('when POST /threads/{threadId}/comments/{commentId}/replies', () => {
+    it('should response 401 when add reply with wrong authorization', async () => {
+      // Arrange
+      const server = await createServer(container);
+
+      await server.inject({
+        method: 'POST',
+        url: '/users',
+        payload: {
+          username: 'dicoding',
+          password: 'secret',
+          fullname: 'Dicoding Indonesia',
+        },
+      });
+      const authResponse = await server.inject({
+        method: 'POST',
+        url: '/authentications',
+        payload: {
+          username: 'dicoding',
+          password: 'secret',
+        },
+      });
+      const { accessToken } = JSON.parse(authResponse.payload).data;
+
+      // Buat thread dengan accessToken
+      const threadResponse = await server.inject({
+        method: 'POST',
+        url: '/threads',
+        payload: { title: 'New title', body: 'lorem ipsum' },
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const { addedThread } = JSON.parse(threadResponse.payload).data;
+
+      const commentResponse = await server.inject({
+        method: 'POST',
+        url: `/threads/${addedThread.id}/comments`,
+        payload: { content: 'lorem ipsum' },
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const { addedComment } = JSON.parse(commentResponse.payload).data;
+
+      // Payload valid untuk balasan
+      const requestPayload = { content: 'sebuah balasan' };
+
+      // Action
+      const response = await server.inject({
+        method: 'POST',
+        url: `/threads/${addedThread.id}/comments/${addedComment.id}/replies`,
+        payload: requestPayload,
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(401);
+      expect(responseJson.message).toBeDefined();
+    });
+
+    it('should response 400 when add reply with invalid payload', async () => {
+      // Arrange
+      const server = await createServer(container);
+
+      // Buat user dan dapatkan accessToken
+      await server.inject({
+        method: 'POST',
+        url: '/users',
+        payload: { username: 'dicoding', password: 'secret', fullname: 'Dicoding Indonesia' },
+      });
+      const authResponse = await server.inject({
+        method: 'POST',
+        url: '/authentications',
+        payload: { username: 'dicoding', password: 'secret' },
+      });
+      const { accessToken } = JSON.parse(authResponse.payload).data;
+
+      // Buat thread dengan accessToken
+      const threadResponse = await server.inject({
+        method: 'POST',
+        url: '/threads',
+        payload: { title: 'New title', body: 'lorem ipsum' },
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const { addedThread } = JSON.parse(threadResponse.payload).data;
+
+      // Buat komentar dengan accessToken
+      const commentResponse = await server.inject({
+        method: 'POST',
+        url: `/threads/${addedThread.id}/comments`,
+        payload: { content: 'lorem ipsum' },
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const { addedComment } = JSON.parse(commentResponse.payload).data;
+
+      // Payload tidak valid
+      const requestPayload = { invalidContent: 'sebuah balasan' };
+
+      // Action
+      const response = await server.inject({
+        method: 'POST',
+        url: `/threads/${addedThread.id}/comments/${addedComment.id}/replies`,
+        payload: requestPayload,
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(400);
+      expect(responseJson.status).toBe('fail');
+      expect(responseJson.message).toBeDefined();
+    });
+
+    it('should response 201 and persisted reply', async () => {
+      // Arrange
+      const server = await createServer(container);
+
+      // Buat user dan dapatkan accessToken
+      await server.inject({
+        method: 'POST',
+        url: '/users',
+        payload: { username: 'dicoding', password: 'secret', fullname: 'Dicoding Indonesia' },
+      });
+      const authResponse = await server.inject({
+        method: 'POST',
+        url: '/authentications',
+        payload: { username: 'dicoding', password: 'secret' },
+      });
+      const { accessToken } = JSON.parse(authResponse.payload).data;
+
+      // Buat thread dengan accessToken
+      const threadResponse = await server.inject({
+        method: 'POST',
+        url: '/threads',
+        payload: { title: 'New title', body: 'lorem ipsum' },
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const { addedThread } = JSON.parse(threadResponse.payload).data;
+
+      // Buat komentar dengan accessToken
+      const commentResponse = await server.inject({
+        method: 'POST',
+        url: `/threads/${addedThread.id}/comments`,
+        payload: { content: 'lorem ipsum' },
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const { addedComment } = JSON.parse(commentResponse.payload).data;
+
+      // Payload valid untuk balasan
+      const requestPayload = { content: 'sebuah balasan' };
+
+      // Action
+      const response = await server.inject({
+        method: 'POST',
+        url: `/threads/${addedThread.id}/comments/${addedComment.id}/replies`,
+        payload: requestPayload,
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(201);
+      expect(responseJson.status).toEqual('success');
+      expect(responseJson.data.addedReply).toBeDefined();
+    });
+  });
 });

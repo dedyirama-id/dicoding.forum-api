@@ -46,19 +46,35 @@ class CommentRepositoryPostgres extends CommentRepository {
         c.id,
         c.content,
         c.created_at,
+        c.user_id,
         u.username,
+        c.parent_comment_id,
         c.is_delete
       FROM comments c
       JOIN users u ON c.user_id = u.id
-      WHERE 
-        c.thread_id = $1
+      WHERE c.thread_id = $1
+      ORDER BY c.created_at ASC
     `,
       values: [threadId],
     };
 
-    const results = await this._pool.query(query);
+    const result = await this._pool.query(query);
 
-    return results.rows.map((result) => new GetComment(result));
+    const comments = result.rows.filter((row) => row.parent_comment_id === null);
+    const replies = result.rows.filter((row) => row.parent_comment_id !== null);
+
+    const commentsWithReplies = comments.map((comment) => {
+      const commentReplies = replies
+        .filter((reply) => reply.parent_comment_id === comment.id)
+        .map((reply) => new GetComment(reply));
+
+      return {
+        ...new GetComment(comment),
+        replies: commentReplies,
+      };
+    });
+
+    return commentsWithReplies;
   }
 
   async deleteCommentById(id) {

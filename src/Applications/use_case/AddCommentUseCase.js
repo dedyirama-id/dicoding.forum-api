@@ -13,6 +13,10 @@ class AddCommentUseCase {
     await this._userRepository.getUserById(newComment.owner);
     await this._threadRepository.getThreadById(newComment.threadId);
 
+    if (newComment.parentCommentId) {
+      await this._commentRepository.getCommentById(newComment.parentCommentId);
+    }
+
     return this._commentRepository.addComment(newComment);
   }
 }

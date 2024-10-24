@@ -11,6 +11,7 @@ class ThreadsHandler {
     this.postCommentToThreadByThreadIdHandler = this.postCommentToThreadByThreadIdHandler.bind(this);
     this.deleteCommentByIdHandler = this.deleteCommentByIdHandler.bind(this);
     this.getThreadByIdHandler = this.getThreadByIdHandler.bind(this);
+    this.postCommentRepliesByCommentIdAndThreadId = this.postCommentRepliesByCommentIdAndThreadId.bind(this);
   }
 
   async postThreadHandler(request, h) {
@@ -89,6 +90,30 @@ class ThreadsHandler {
       },
     });
     response.code(200);
+    return response;
+  }
+
+  async postCommentRepliesByCommentIdAndThreadId(request, h) {
+    const { threadId, commentId } = request.params;
+    const owner = request.auth.credentials.id;
+    const { content } = request.payload;
+
+    const addCommentUseCase = this._container.getInstance(AddCommentUseCase.name);
+
+    const addedReply = await addCommentUseCase.execute({
+      content,
+      owner,
+      threadId,
+      parentCommentId: commentId,
+    });
+
+    const response = h.response({
+      status: 'success',
+      data: {
+        addedReply,
+      },
+    });
+    response.code(201);
     return response;
   }
 }

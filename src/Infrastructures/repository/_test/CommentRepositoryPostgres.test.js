@@ -174,34 +174,43 @@ describe('CommentRepositoryPostgres', () => {
   });
 
   describe('getAllCommentsByThreadId function', () => {
-    it('should return all comments by thread id correctly', async () => {
+    it('should return all comments with their replies by thread id correctly', async () => {
       // Arrange
       const fakeIdGenerator = () => '123';
       const commentRepository = new CommentRepositoryPostgres(pool, fakeIdGenerator);
 
       await UsersTableTestHelper.addUser({ id: 'user-123', username: 'userA' });
       await UsersTableTestHelper.addUser({ id: 'user-456', username: 'userB' });
+      await UsersTableTestHelper.addUser({ id: 'user-789', username: 'userC' });
       await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
 
       await CommentsTableTestHelper.addComment({
-        id: 'comment-123', content: 'comment 1', threadId: 'thread-123', userId: 'user-123',
+        id: 'comment-123', content: 'comment 1', threadId: 'thread-123', userId: 'user-123', isDelete: false,
       });
       await CommentsTableTestHelper.addComment({
-        id: 'comment-456', content: 'comment 2', threadId: 'thread-123', userId: 'user-456',
+        id: 'comment-456', content: 'reply to comment 1', threadId: 'thread-123', userId: 'user-456', parentCommentId: 'comment-123', isDelete: false,
+      });
+      await CommentsTableTestHelper.addComment({
+        id: 'comment-789', content: 'another reply to comment 1', threadId: 'thread-123', userId: 'user-789', parentCommentId: 'comment-123', isDelete: false,
       });
 
       // Action
       const comments = await commentRepository.getAllCommentsByThreadId('thread-123');
 
       // Assert
-      expect(comments).toHaveLength(2);
+      expect(comments).toHaveLength(1); // Only one parent comment
       expect(comments[0].id).toBe('comment-123');
       expect(comments[0].content).toBe('comment 1');
       expect(comments[0].username).toBe('userA');
+      expect(comments[0].replies).toHaveLength(2); // Two replies to the parent comment
 
-      expect(comments[1].id).toBe('comment-456');
-      expect(comments[1].content).toBe('comment 2');
-      expect(comments[1].username).toBe('userB');
+      expect(comments[0].replies[0].id).toBe('comment-456');
+      expect(comments[0].replies[0].content).toBe('reply to comment 1');
+      expect(comments[0].replies[0].username).toBe('userB');
+
+      expect(comments[0].replies[1].id).toBe('comment-789');
+      expect(comments[0].replies[1].content).toBe('another reply to comment 1');
+      expect(comments[0].replies[1].username).toBe('userC');
     });
 
     it('should return an empty array when there are no comments for the thread id', async () => {

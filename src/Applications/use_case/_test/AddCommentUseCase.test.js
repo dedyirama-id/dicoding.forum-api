@@ -60,6 +60,35 @@ describe('AddCommentUseCase', () => {
     await expect(addCommentUseCase.execute(useCasePayload)).rejects.toThrowError('THREAD_REPOSITORY.THREAD_NOT_FOUND');
   });
 
+  it('should throw error when add comment with invalid parentCommentId', async () => {
+    // Arange
+    const useCasePayload = {
+      content: 'lorem ipsum',
+      owner: 'user-123',
+      threadId: 'thread-123',
+      parentCommentId: 'comment-123',
+    };
+
+    const mockUserRepository = new UserRepository();
+    const mockThreadRepository = new ThreadRepository();
+    const mockCommentRepository = new CommentRepository();
+
+    mockUserRepository.getUserById = jest.fn().mockImplementation(() => Promise.resolve());
+    mockThreadRepository.getThreadById = jest.fn().mockImplementation(() => Promise.resolve());
+    mockCommentRepository.addComment = jest.fn().mockImplementation(() => Promise.resolve());
+    mockCommentRepository.addComment = jest.fn().mockImplementation(() => Promise.resolve());
+    mockCommentRepository.getCommentById = jest.fn().mockImplementation(() => Promise.reject(new Error('COMMENT_REPOSITORY.COMMENT_NOT_FOUND')));
+
+    const addCommentUseCase = new AddCommentUseCase({
+      commentRepository: mockCommentRepository,
+      userRepository: mockUserRepository,
+      threadRepository: mockThreadRepository,
+    });
+
+    // Action & Assert
+    await expect(addCommentUseCase.execute(useCasePayload)).rejects.toThrowError('COMMENT_REPOSITORY.COMMENT_NOT_FOUND');
+  });
+
   it('should throw orchestrating the add thread action', async () => {
     // Arange
     const useCasePayload = {
