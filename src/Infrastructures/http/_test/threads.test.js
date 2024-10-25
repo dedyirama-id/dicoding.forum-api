@@ -544,7 +544,6 @@ describe('/threads endpoint', () => {
 
       const { addedThread } = JSON.parse(threadResponse.payload).data;
 
-      // Add some comments
       await server.inject({
         method: 'POST',
         url: `/threads/${addedThread.id}/comments`,
@@ -616,7 +615,6 @@ describe('/threads endpoint', () => {
       });
       const { accessToken } = JSON.parse(authResponse.payload).data;
 
-      // Buat thread dengan accessToken
       const threadResponse = await server.inject({
         method: 'POST',
         url: '/threads',
@@ -633,7 +631,6 @@ describe('/threads endpoint', () => {
       });
       const { addedComment } = JSON.parse(commentResponse.payload).data;
 
-      // Payload valid untuk balasan
       const requestPayload = { content: 'sebuah balasan' };
 
       // Action
@@ -653,7 +650,6 @@ describe('/threads endpoint', () => {
       // Arrange
       const server = await createServer(container);
 
-      // Buat user dan dapatkan accessToken
       await server.inject({
         method: 'POST',
         url: '/users',
@@ -666,7 +662,6 @@ describe('/threads endpoint', () => {
       });
       const { accessToken } = JSON.parse(authResponse.payload).data;
 
-      // Buat thread dengan accessToken
       const threadResponse = await server.inject({
         method: 'POST',
         url: '/threads',
@@ -675,7 +670,6 @@ describe('/threads endpoint', () => {
       });
       const { addedThread } = JSON.parse(threadResponse.payload).data;
 
-      // Buat komentar dengan accessToken
       const commentResponse = await server.inject({
         method: 'POST',
         url: `/threads/${addedThread.id}/comments`,
@@ -684,7 +678,6 @@ describe('/threads endpoint', () => {
       });
       const { addedComment } = JSON.parse(commentResponse.payload).data;
 
-      // Payload tidak valid
       const requestPayload = { invalidContent: 'sebuah balasan' };
 
       // Action
@@ -706,7 +699,6 @@ describe('/threads endpoint', () => {
       // Arrange
       const server = await createServer(container);
 
-      // Buat user dan dapatkan accessToken
       await server.inject({
         method: 'POST',
         url: '/users',
@@ -719,7 +711,6 @@ describe('/threads endpoint', () => {
       });
       const { accessToken } = JSON.parse(authResponse.payload).data;
 
-      // Buat thread dengan accessToken
       const threadResponse = await server.inject({
         method: 'POST',
         url: '/threads',
@@ -728,7 +719,6 @@ describe('/threads endpoint', () => {
       });
       const { addedThread } = JSON.parse(threadResponse.payload).data;
 
-      // Buat komentar dengan accessToken
       const commentResponse = await server.inject({
         method: 'POST',
         url: `/threads/${addedThread.id}/comments`,
@@ -737,7 +727,6 @@ describe('/threads endpoint', () => {
       });
       const { addedComment } = JSON.parse(commentResponse.payload).data;
 
-      // Payload valid untuk balasan
       const requestPayload = { content: 'sebuah balasan' };
 
       // Action
@@ -761,7 +750,6 @@ describe('/threads endpoint', () => {
       // Arrange
       const server = await createServer(container);
 
-      // Buat user dan dapatkan accessToken
       await server.inject({
         method: 'POST',
         url: '/users',
@@ -774,7 +762,6 @@ describe('/threads endpoint', () => {
       });
       const { accessToken } = JSON.parse(authResponse.payload).data;
 
-      // Buat thread dengan accessToken
       const threadResponse = await server.inject({
         method: 'POST',
         url: '/threads',
@@ -783,7 +770,6 @@ describe('/threads endpoint', () => {
       });
       const { addedThread } = JSON.parse(threadResponse.payload).data;
 
-      // Buat komentar dengan accessToken
       const commentResponse = await server.inject({
         method: 'POST',
         url: `/threads/${addedThread.id}/comments`,
@@ -792,7 +778,6 @@ describe('/threads endpoint', () => {
       });
       const { addedComment } = JSON.parse(commentResponse.payload).data;
 
-      // Buat balasan pada komentar dengan accessToken
       const replyResponse = await server.inject({
         method: 'POST',
         url: `/threads/${addedThread.id}/comments/${addedComment.id}/replies`,
@@ -801,7 +786,7 @@ describe('/threads endpoint', () => {
       });
       const { addedReply } = JSON.parse(replyResponse.payload).data;
 
-      // Action - Hapus balasan
+      // Action
       const response = await server.inject({
         method: 'DELETE',
         url: `/threads/${addedThread.id}/comments/${addedComment.id}/replies/${addedReply.id}`,
@@ -818,7 +803,6 @@ describe('/threads endpoint', () => {
       // Arrange
       const server = await createServer(container);
 
-      // Buat user 1 dan dapatkan accessToken
       await server.inject({
         method: 'POST',
         url: '/users',
@@ -831,7 +815,6 @@ describe('/threads endpoint', () => {
       });
       const { accessToken: accessToken1 } = JSON.parse(authResponse1.payload).data;
 
-      // Buat user 2 dan dapatkan accessToken
       await server.inject({
         method: 'POST',
         url: '/users',
@@ -844,7 +827,6 @@ describe('/threads endpoint', () => {
       });
       const { accessToken: accessToken2 } = JSON.parse(authResponse2.payload).data;
 
-      // Buat thread dengan accessToken 1
       const threadResponse = await server.inject({
         method: 'POST',
         url: '/threads',
@@ -853,7 +835,6 @@ describe('/threads endpoint', () => {
       });
       const { addedThread } = JSON.parse(threadResponse.payload).data;
 
-      // Buat komentar dengan accessToken 1
       const commentResponse = await server.inject({
         method: 'POST',
         url: `/threads/${addedThread.id}/comments`,
@@ -862,7 +843,6 @@ describe('/threads endpoint', () => {
       });
       const { addedComment } = JSON.parse(commentResponse.payload).data;
 
-      // Buat balasan pada komentar dengan accessToken 1
       const replyResponse = await server.inject({
         method: 'POST',
         url: `/threads/${addedThread.id}/comments/${addedComment.id}/replies`,
@@ -871,7 +851,7 @@ describe('/threads endpoint', () => {
       });
       const { addedReply } = JSON.parse(replyResponse.payload).data;
 
-      // Action - User 2 mencoba menghapus balasan
+      // Action
       const response = await server.inject({
         method: 'DELETE',
         url: `/threads/${addedThread.id}/comments/${addedComment.id}/replies/${addedReply.id}`,
@@ -889,7 +869,6 @@ describe('/threads endpoint', () => {
       // Arrange
       const server = await createServer(container);
 
-      // Buat user dan dapatkan accessToken
       await server.inject({
         method: 'POST',
         url: '/users',
@@ -902,7 +881,6 @@ describe('/threads endpoint', () => {
       });
       const { accessToken } = JSON.parse(authResponse.payload).data;
 
-      // Buat thread dengan accessToken
       const threadResponse = await server.inject({
         method: 'POST',
         url: '/threads',
@@ -911,7 +889,6 @@ describe('/threads endpoint', () => {
       });
       const { addedThread } = JSON.parse(threadResponse.payload).data;
 
-      // Buat komentar dengan accessToken
       const commentResponse = await server.inject({
         method: 'POST',
         url: `/threads/${addedThread.id}/comments`,
@@ -920,7 +897,7 @@ describe('/threads endpoint', () => {
       });
       const { addedComment } = JSON.parse(commentResponse.payload).data;
 
-      // Action - Hapus balasan yang tidak ada
+      // Action
       const response = await server.inject({
         method: 'DELETE',
         url: `/threads/${addedThread.id}/comments/${addedComment.id}/replies/non-existent-reply`,
