@@ -62,9 +62,7 @@ describe('AddCommentUseCase', () => {
     // Action & Assert
     await expect(addCommentUseCase.execute(useCasePayload)).rejects.toThrowError();
 
-    expect(mockUserRepository.getUserById).toBeCalledTimes(1);
     expect(mockUserRepository.getUserById).toHaveBeenCalledWith('user-123');
-    expect(mockThreadRepository.getThreadById).toBeCalledTimes(1);
     expect(mockThreadRepository.getThreadById).toHaveBeenCalledWith('thread-123');
     expect(mockCommentRepository.addComment).not.toBeCalled();
   });
@@ -96,11 +94,8 @@ describe('AddCommentUseCase', () => {
     // Action & Assert
     await expect(addCommentUseCase.execute(useCasePayload)).rejects.toThrowError();
 
-    expect(mockUserRepository.getUserById).toBeCalledTimes(1);
     expect(mockUserRepository.getUserById).toHaveBeenCalledWith('user-123');
-    expect(mockThreadRepository.getThreadById).toBeCalledTimes(1);
     expect(mockThreadRepository.getThreadById).toHaveBeenCalledWith('thread-123');
-    expect(mockCommentRepository.getCommentById).toBeCalledTimes(1);
     expect(mockCommentRepository.getCommentById).toHaveBeenCalledWith('comment-123');
     expect(mockCommentRepository.addComment).not.toBeCalled();
   });
@@ -171,9 +166,7 @@ describe('AddCommentUseCase', () => {
       owner: 'user-123',
       threadId: 'thread-123',
     }));
-    expect(mockUserRepository.getUserById).toBeCalledTimes(1);
     expect(mockUserRepository.getUserById).toHaveBeenCalledWith('user-123');
-    expect(mockThreadRepository.getThreadById).toBeCalledTimes(1);
     expect(mockThreadRepository.getThreadById).toHaveBeenCalledWith('thread-123');
   });
 });

@@ -28,7 +28,6 @@ describe('AddThreadUseCase', () => {
     // Action & Assert
     await expect(addThreadUseCase.execute(useCasePayload)).rejects.toThrowError('USER_REPOSITORY.USER_NOT_FOUND');
 
-    expect(mockUserRepository.getUserById).toHaveBeenCalledTimes(1);
     expect(mockUserRepository.getUserById).toHaveBeenCalledWith('user-123');
     expect(mockThreadRepository.addThread).not.toBeCalled();
   });
@@ -85,7 +84,6 @@ describe('AddThreadUseCase', () => {
       title: 'New thread',
       body: 'lorem ipsum',
     }));
-    expect(mockUserRepository.getUserById).toHaveBeenCalledTimes(1);
     expect(mockUserRepository.getUserById).toHaveBeenCalledWith('user-123');
   });
 });

@@ -56,20 +56,20 @@ describe('DeleteCommentUseCase', () => {
     const mockUserRepository = new UserRepository();
     const mockCommentRepository = new CommentRepository();
 
-    mockUserRepository.getUserById = jest.fn().mockImplementation(() => Promise.resolve({ id: 'user-123' }));
-    mockCommentRepository.getCommentById = jest.fn().mockImplementation(() => Promise.resolve({ owner: 'user-123' }));
-    mockCommentRepository.deleteCommentById = jest.fn().mockImplementation(() => Promise.resolve());
+    mockUserRepository.getUserById = jest.fn().mockResolvedValue({ id: 'user-123' });
+    mockCommentRepository.getCommentById = jest.fn().mockResolvedValue({ owner: 'user-123' });
+    mockCommentRepository.deleteCommentById = jest.fn().mockResolvedValue();
 
     const deleteCommentUseCase = new DeleteCommentUseCase({
       userRepository: mockUserRepository,
       commentRepository: mockCommentRepository,
     });
 
-    // Act
-    await deleteCommentUseCase.execute(useCasePayload);
+    // Action & Assert
+    await expect(deleteCommentUseCase.execute(useCasePayload)).resolves.not.toThrowError();
 
-    // Assert
-    expect(mockCommentRepository.deleteCommentById)
-      .toHaveBeenCalledWith(useCasePayload.commentId);
+    expect(mockUserRepository.getUserById).toHaveBeenCalledWith('user-123');
+    expect(mockCommentRepository.getCommentById).toHaveBeenCalledWith('comment-123');
+    expect(mockCommentRepository.deleteCommentById).toHaveBeenCalledWith('comment-123');
   });
 });
