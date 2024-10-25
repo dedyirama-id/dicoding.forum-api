@@ -3,7 +3,6 @@ const GetComment = require('../../../Domains/comments/entities/GetComment');
 const GetThread = require('../../../Domains/threads/entities/GetThread');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const RegisteredUser = require('../../../Domains/users/entities/RegisteredUser');
-const UserRepository = require('../../../Domains/users/UserRepository');
 const GetThreadDetailsUseCase = require('../GetThreadDetailsUseCase');
 
 describe('GetThreadDetailsUseCase', () => {
@@ -53,11 +52,9 @@ describe('GetThreadDetailsUseCase', () => {
 
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
-    const mockUserRepository = new UserRepository();
 
-    mockThreadRepository.getThreadById = jest.fn().mockImplementation(() => Promise.resolve(thread));
-    mockCommentRepository.getAllCommentsByThreadId = jest.fn().mockImplementation(() => Promise.resolve([{ ...comment }]));
-    mockUserRepository.getUserById = jest.fn().mockImplementation(() => Promise.resolve(user));
+    mockThreadRepository.getThreadById = jest.fn().mockResolvedValue(thread);
+    mockCommentRepository.getAllCommentsByThreadId = jest.fn().mockResolvedValue([{ ...comment }]);
 
     const useCasePayload = {
       threadId: 'thread-123',
@@ -87,5 +84,8 @@ describe('GetThreadDetailsUseCase', () => {
         },
       ],
     });
+
+    expect(mockThreadRepository.getThreadById).toHaveBeenCalledWith('thread-123');
+    expect(mockCommentRepository.getAllCommentsByThreadId).toHaveBeenCalledWith('thread-123');
   });
 });

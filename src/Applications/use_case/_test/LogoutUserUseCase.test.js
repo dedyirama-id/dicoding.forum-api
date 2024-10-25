@@ -32,10 +32,8 @@ describe('LogoutUserUseCase', () => {
       refreshToken: 'refreshToken',
     };
     const mockAuthenticationRepository = new AuthenticationRepository();
-    mockAuthenticationRepository.checkAvailabilityToken = jest.fn()
-      .mockImplementation(() => Promise.resolve());
-    mockAuthenticationRepository.deleteToken = jest.fn()
-      .mockImplementation(() => Promise.resolve());
+    mockAuthenticationRepository.checkAvailabilityToken = jest.fn().mockResolvedValue();
+    mockAuthenticationRepository.deleteToken = jest.fn().mockResolvedValue();
 
     const logoutUserUseCase = new LogoutUserUseCase({
       authenticationRepository: mockAuthenticationRepository,
@@ -45,9 +43,7 @@ describe('LogoutUserUseCase', () => {
     await logoutUserUseCase.execute(useCasePayload);
 
     // Assert
-    expect(mockAuthenticationRepository.checkAvailabilityToken)
-      .toHaveBeenCalledWith(useCasePayload.refreshToken);
-    expect(mockAuthenticationRepository.deleteToken)
-      .toHaveBeenCalledWith(useCasePayload.refreshToken);
+    expect(mockAuthenticationRepository.checkAvailabilityToken).toHaveBeenCalledWith(useCasePayload.refreshToken);
+    expect(mockAuthenticationRepository.deleteToken).toHaveBeenCalledWith(useCasePayload.refreshToken);
   });
 });
