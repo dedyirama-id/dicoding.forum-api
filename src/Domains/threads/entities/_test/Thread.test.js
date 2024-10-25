@@ -7,21 +7,41 @@ describe('Thread entities', () => {
       title: 'new title',
       body: 'lorem ipsum',
       user_id: 'user-123',
+      created_at: new Date(),
+      updated_at: new Date(),
     };
     const payload2 = {
       id: 'thread-123',
       body: 'lorem ipsum',
       user_id: 'user-123',
+      created_at: new Date(),
+      updated_at: new Date(),
     };
     const payload3 = {
       id: 'thread-123',
       title: 'new title',
       user_id: 'user-123',
+      created_at: new Date(),
+      updated_at: new Date(),
     };
     const payload4 = {
       id: 'thread-123',
       title: 'new title',
       body: 'lorem ipsum',
+      created_at: new Date(),
+      updated_at: new Date(),
+    };
+    const payload5 = {
+      id: 'thread-123',
+      title: 'new title',
+      body: 'lorem ipsum',
+      updated_at: new Date(),
+    };
+    const payload6 = {
+      id: 'thread-123',
+      title: 'new title',
+      body: 'lorem ipsum',
+      created_at: new Date(),
     };
 
     // Action & Assert
@@ -29,6 +49,8 @@ describe('Thread entities', () => {
     expect(() => new Thread(payload2)).toThrowError('THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
     expect(() => new Thread(payload3)).toThrowError('THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
     expect(() => new Thread(payload4)).toThrowError('THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
+    expect(() => new Thread(payload5)).toThrowError('THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
+    expect(() => new Thread(payload6)).toThrowError('THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
   });
 
   it('should throw error when payload not meet data type specification', () => {
@@ -38,24 +60,48 @@ describe('Thread entities', () => {
       title: 'title',
       body: 'lorem ipsum',
       user_id: 'user-123',
+      created_at: new Date(),
+      updated_at: new Date(),
     };
     const payload2 = {
       id: 'thread-123',
       title: 123,
       body: 'lorem ipsum',
       user_id: 'user-123',
+      created_at: new Date(),
+      updated_at: new Date(),
     };
     const payload3 = {
       id: 'thread-123',
       title: 'title',
       body: 123,
       user_id: 'user-123',
+      created_at: new Date(),
+      updated_at: new Date(),
     };
     const payload4 = {
       id: 'thread-123',
       title: 'title',
       body: 'lorem ipsum',
       user_id: 123,
+      created_at: new Date(),
+      updated_at: new Date(),
+    };
+    const payload5 = {
+      id: 'thread-123',
+      title: 'title',
+      body: 'lorem ipsum',
+      user_id: 123,
+      created_at: 123,
+      updated_at: new Date(),
+    };
+    const payload6 = {
+      id: 'thread-123',
+      title: 'title',
+      body: 'lorem ipsum',
+      user_id: 123,
+      created_at: new Date(),
+      updated_at: 123,
     };
 
     // Action & Assert
@@ -63,6 +109,8 @@ describe('Thread entities', () => {
     expect(() => new Thread(payload2)).toThrowError('THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
     expect(() => new Thread(payload3)).toThrowError('THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
     expect(() => new Thread(payload4)).toThrowError('THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    expect(() => new Thread(payload5)).toThrowError('THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    expect(() => new Thread(payload6)).toThrowError('THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
   it('should create Thread entities correctly', () => {

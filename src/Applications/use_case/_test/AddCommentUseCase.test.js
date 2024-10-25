@@ -20,9 +20,8 @@ describe('AddCommentUseCase', () => {
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
 
-    mockUserRepository.getUserById = jest.fn().mockImplementation(() => Promise.reject(new Error('USER_REPOSITORY.USER_NOT_FOUND')));
-    mockThreadRepository.getThreadById = jest.fn().mockImplementation(() => Promise.resolve());
-    mockCommentRepository.addComment = jest.fn().mockImplementation(() => Promise.resolve());
+    mockUserRepository.getUserById = jest.fn().mockRejectedValue(new Error());
+    mockCommentRepository.addComment = jest.fn().mockResolvedValue();
 
     const addCommentUseCase = new AddCommentUseCase({
       commentRepository: mockCommentRepository,
@@ -31,7 +30,11 @@ describe('AddCommentUseCase', () => {
     });
 
     // Action & Assert
-    await expect(addCommentUseCase.execute(useCasePayload)).rejects.toThrowError('USER_REPOSITORY.USER_NOT_FOUND');
+    await expect(addCommentUseCase.execute(useCasePayload)).rejects.toThrowError();
+
+    expect(mockUserRepository.getUserById).toBeCalledTimes(1);
+    expect(mockUserRepository.getUserById).toHaveBeenCalledWith('user-123');
+    expect(mockCommentRepository.addComment).not.toBeCalled();
   });
 
   it('should throw error when add comment with invalid thread id', async () => {
@@ -46,9 +49,9 @@ describe('AddCommentUseCase', () => {
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
 
-    mockUserRepository.getUserById = jest.fn().mockImplementation(() => Promise.resolve());
-    mockThreadRepository.getThreadById = jest.fn().mockImplementation(() => Promise.reject(new Error('THREAD_REPOSITORY.THREAD_NOT_FOUND')));
-    mockCommentRepository.addComment = jest.fn().mockImplementation(() => Promise.resolve());
+    mockUserRepository.getUserById = jest.fn().mockResolvedValue();
+    mockThreadRepository.getThreadById = jest.fn().mockRejectedValue(new Error());
+    mockCommentRepository.addComment = jest.fn().mockResolvedValue();
 
     const addCommentUseCase = new AddCommentUseCase({
       commentRepository: mockCommentRepository,
@@ -57,11 +60,17 @@ describe('AddCommentUseCase', () => {
     });
 
     // Action & Assert
-    await expect(addCommentUseCase.execute(useCasePayload)).rejects.toThrowError('THREAD_REPOSITORY.THREAD_NOT_FOUND');
+    await expect(addCommentUseCase.execute(useCasePayload)).rejects.toThrowError();
+
+    expect(mockUserRepository.getUserById).toBeCalledTimes(1);
+    expect(mockUserRepository.getUserById).toHaveBeenCalledWith('user-123');
+    expect(mockThreadRepository.getThreadById).toBeCalledTimes(1);
+    expect(mockThreadRepository.getThreadById).toHaveBeenCalledWith('thread-123');
+    expect(mockCommentRepository.addComment).not.toBeCalled();
   });
 
   it('should throw error when add comment with invalid parentCommentId', async () => {
-    // Arange
+    // Arrange
     const useCasePayload = {
       content: 'lorem ipsum',
       owner: 'user-123',
@@ -73,11 +82,10 @@ describe('AddCommentUseCase', () => {
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
 
-    mockUserRepository.getUserById = jest.fn().mockImplementation(() => Promise.resolve());
-    mockThreadRepository.getThreadById = jest.fn().mockImplementation(() => Promise.resolve());
-    mockCommentRepository.addComment = jest.fn().mockImplementation(() => Promise.resolve());
-    mockCommentRepository.addComment = jest.fn().mockImplementation(() => Promise.resolve());
-    mockCommentRepository.getCommentById = jest.fn().mockImplementation(() => Promise.reject(new Error('COMMENT_REPOSITORY.COMMENT_NOT_FOUND')));
+    mockUserRepository.getUserById = jest.fn().mockResolvedValue();
+    mockThreadRepository.getThreadById = jest.fn().mockResolvedValue();
+    mockCommentRepository.addComment = jest.fn().mockResolvedValue();
+    mockCommentRepository.getCommentById = jest.fn().mockRejectedValue(new Error());
 
     const addCommentUseCase = new AddCommentUseCase({
       commentRepository: mockCommentRepository,
@@ -86,10 +94,18 @@ describe('AddCommentUseCase', () => {
     });
 
     // Action & Assert
-    await expect(addCommentUseCase.execute(useCasePayload)).rejects.toThrowError('COMMENT_REPOSITORY.COMMENT_NOT_FOUND');
+    await expect(addCommentUseCase.execute(useCasePayload)).rejects.toThrowError();
+
+    expect(mockUserRepository.getUserById).toBeCalledTimes(1);
+    expect(mockUserRepository.getUserById).toHaveBeenCalledWith('user-123');
+    expect(mockThreadRepository.getThreadById).toBeCalledTimes(1);
+    expect(mockThreadRepository.getThreadById).toHaveBeenCalledWith('thread-123');
+    expect(mockCommentRepository.getCommentById).toBeCalledTimes(1);
+    expect(mockCommentRepository.getCommentById).toHaveBeenCalledWith('comment-123');
+    expect(mockCommentRepository.addComment).not.toBeCalled();
   });
 
-  it('should throw orchestrating the add thread action', async () => {
+  it('should orchestrating the add thread action', async () => {
     // Arange
     const useCasePayload = {
       content: 'lorem ipsum',
@@ -149,11 +165,15 @@ describe('AddCommentUseCase', () => {
       updated_at: new Date(addedComment.updatedAt),
       is_delete: false,
     }));
-    expect(mockCommentRepository.addComment).toBeCalledWith(new NewComment({
+    expect(mockCommentRepository.addComment).toBeCalledTimes(1);
+    expect(mockCommentRepository.addComment).toHaveBeenCalledWith(new NewComment({
       content: 'lorem ipsum',
       owner: 'user-123',
       threadId: 'thread-123',
     }));
-    expect(mockCommentRepository.addComment).toBeCalledTimes(1);
+    expect(mockUserRepository.getUserById).toBeCalledTimes(1);
+    expect(mockUserRepository.getUserById).toHaveBeenCalledWith('user-123');
+    expect(mockThreadRepository.getThreadById).toBeCalledTimes(1);
+    expect(mockThreadRepository.getThreadById).toHaveBeenCalledWith('thread-123');
   });
 });

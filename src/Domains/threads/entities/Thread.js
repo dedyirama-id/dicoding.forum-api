@@ -15,7 +15,7 @@ class Thread {
       id, title, body, user_id: userId, created_at: createdAt, updated_at: updatedAt,
     } = payload;
 
-    if (!id || !title || !body || !userId) {
+    if (!id || !title || !body || !userId || !createdAt || !updatedAt) {
       throw new Error('THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
     }
 
