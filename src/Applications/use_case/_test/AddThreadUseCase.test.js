@@ -17,8 +17,8 @@ describe('AddThreadUseCase', () => {
     const mockThreadRepository = new ThreadRepository();
     const mockUserRepository = new UserRepository();
 
-    mockUserRepository.getUserById = jest.fn().mockImplementation(() => Promise.reject(new Error('USER_REPOSITORY.USER_NOT_FOUND')));
-    mockThreadRepository.addThread = jest.fn().mockImplementation(() => Promise.resolve());
+    mockUserRepository.getUserById = jest.fn().mockRejectedValue(new Error('USER_REPOSITORY.USER_NOT_FOUND'));
+    mockThreadRepository.addThread = jest.fn().mockResolvedValue();
 
     const addThreadUseCase = new AddThreadUseCase({
       threadRepository: mockThreadRepository,
@@ -27,6 +27,10 @@ describe('AddThreadUseCase', () => {
 
     // Action & Assert
     await expect(addThreadUseCase.execute(useCasePayload)).rejects.toThrowError('USER_REPOSITORY.USER_NOT_FOUND');
+
+    expect(mockUserRepository.getUserById).toHaveBeenCalledTimes(1);
+    expect(mockUserRepository.getUserById).toHaveBeenCalledWith('user-123');
+    expect(mockThreadRepository.addThread).not.toBeCalled();
   });
 
   it('should orchestrating the add thread action correctly', async () => {
@@ -54,8 +58,8 @@ describe('AddThreadUseCase', () => {
     const mockThreadRepository = new ThreadRepository();
     const mockUserRepository = new UserRepository();
 
-    mockThreadRepository.addThread = jest.fn().mockImplementation(() => Promise.resolve(mockThread));
-    mockUserRepository.getUserById = jest.fn().mockImplementation(() => Promise.resolve(mockRegisteredUser));
+    mockThreadRepository.addThread = jest.fn().mockResolvedValue(mockThread);
+    mockUserRepository.getUserById = jest.fn().mockResolvedValue(mockRegisteredUser);
 
     const addThreadUseCase = new AddThreadUseCase({
       threadRepository: mockThreadRepository,
@@ -74,11 +78,14 @@ describe('AddThreadUseCase', () => {
       created_at: mockThread.createdAt,
       updated_at: mockThread.updatedAt,
     }));
-    expect(mockThreadRepository.addThread).toBeCalledWith(new NewThread({
-      owner: useCasePayload.owner,
-      title: useCasePayload.title,
-      body: useCasePayload.body,
+
+    expect(mockThreadRepository.addThread).toHaveBeenCalledTimes(1);
+    expect(mockThreadRepository.addThread).toHaveBeenCalledWith(new NewThread({
+      owner: 'user-123',
+      title: 'New thread',
+      body: 'lorem ipsum',
     }));
-    expect(mockThreadRepository.addThread).toBeCalledTimes(1);
+    expect(mockUserRepository.getUserById).toHaveBeenCalledTimes(1);
+    expect(mockUserRepository.getUserById).toHaveBeenCalledWith('user-123');
   });
 });
