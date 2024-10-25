@@ -65,9 +65,9 @@ describe('CommentRepositoryPostgres', () => {
       // Assert
       expect(addedComment).toStrictEqual(new Comment({
         id: 'comment-123',
-        content: newComment.content,
-        user_id: newComment.owner,
-        thread_id: newComment.threadId,
+        content: 'lorem ipsum',
+        user_id: 'user-123',
+        thread_id: 'thread-123',
         parent_comment_id: null,
         created_at: addedComment.createdAt,
         updated_at: addedComment.updatedAt,
