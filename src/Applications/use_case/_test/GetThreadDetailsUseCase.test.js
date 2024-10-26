@@ -9,7 +9,7 @@ describe('GetThreadDetailsUseCase', () => {
   it('should throw error when payload is not contain threadId', async () => {
     // Arange
     const getThreadDetailsUseCase = new GetThreadDetailsUseCase({});
-    const useCasePayload = {};
+    const useCasePayload = undefined;
 
     // Action & Assert
     await expect(getThreadDetailsUseCase.execute(useCasePayload)).rejects.toThrowError('GET_THREAD_DETAILS_USE_CASE.NOT_CONTAIN_THREAD_ID');
@@ -56,9 +56,7 @@ describe('GetThreadDetailsUseCase', () => {
     mockThreadRepository.getThreadById = jest.fn().mockResolvedValue(thread);
     mockCommentRepository.getAllCommentsByThreadId = jest.fn().mockResolvedValue([{ ...comment }]);
 
-    const useCasePayload = {
-      threadId: 'thread-123',
-    };
+    const useCasePayload = 'thread-123';
 
     const getThreadDetailsUseCase = new GetThreadDetailsUseCase({
       threadRepository: mockThreadRepository,

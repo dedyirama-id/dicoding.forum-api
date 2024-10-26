@@ -35,7 +35,7 @@ class ThreadsHandler {
     const { threadId } = request.params;
     const getThreadDetailsUseCase = this._container.getInstance(GetThreadDetailsUseCase.name);
 
-    const thread = await getThreadDetailsUseCase.execute({ threadId });
+    const thread = await getThreadDetailsUseCase.execute(threadId);
 
     const response = h.response({
       status: 'success',

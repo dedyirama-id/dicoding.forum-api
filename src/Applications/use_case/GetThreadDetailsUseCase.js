@@ -4,9 +4,8 @@ class GetThreadDetailsUseCase {
     this._commentRepository = commentRepository;
   }
 
-  async execute(useCasePayload) {
-    this._validatePayload(useCasePayload);
-    const { threadId } = useCasePayload;
+  async execute(threadId) {
+    this._validatePayload(threadId);
 
     const thread = await this._threadRepository.getThreadById(threadId);
     const comments = await this._commentRepository.getAllCommentsByThreadId(threadId);
@@ -18,12 +17,11 @@ class GetThreadDetailsUseCase {
   }
 
   _validatePayload(payload) {
-    const { threadId } = payload;
-    if (!threadId) {
+    if (!payload) {
       throw new Error('GET_THREAD_DETAILS_USE_CASE.NOT_CONTAIN_THREAD_ID');
     }
 
-    if (typeof threadId !== 'string') {
+    if (typeof payload !== 'string') {
       throw new Error('GET_THREAD_DETAILS_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
   }
