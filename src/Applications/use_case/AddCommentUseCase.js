@@ -7,17 +7,17 @@ class AddCommentUseCase {
     this._userRepository = userRepository;
   }
 
-  async execute(useCasePayload) {
-    const newComment = new NewComment(useCasePayload);
+  async execute(threadId, userId, newCommentPayload) {
+    const newComment = new NewComment(newCommentPayload);
 
-    await this._userRepository.getUserById(newComment.owner);
-    await this._threadRepository.getThreadById(newComment.threadId);
+    await this._userRepository.getUserById(userId);
+    await this._threadRepository.getThreadById(threadId);
 
     if (newComment.parentCommentId) {
       await this._commentRepository.getCommentById(newComment.parentCommentId);
     }
 
-    return this._commentRepository.addComment(newComment);
+    return this._commentRepository.addComment(threadId, userId, newComment);
   }
 }
 

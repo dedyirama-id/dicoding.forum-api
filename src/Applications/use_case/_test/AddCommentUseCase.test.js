@@ -12,8 +12,6 @@ describe('AddCommentUseCase', () => {
     // Arange
     const useCasePayload = {
       content: 'lorem ipsum',
-      owner: 'user-123',
-      threadId: 'thread-123',
     };
 
     const mockUserRepository = new UserRepository();
@@ -30,7 +28,7 @@ describe('AddCommentUseCase', () => {
     });
 
     // Action & Assert
-    await expect(addCommentUseCase.execute(useCasePayload)).rejects.toThrowError();
+    await expect(addCommentUseCase.execute('thread-123', 'user-123', useCasePayload)).rejects.toThrowError();
 
     expect(mockUserRepository.getUserById).toBeCalledTimes(1);
     expect(mockUserRepository.getUserById).toHaveBeenCalledWith('user-123');
@@ -41,8 +39,6 @@ describe('AddCommentUseCase', () => {
     // Arange
     const useCasePayload = {
       content: 'lorem ipsum',
-      owner: 'user-123',
-      threadId: 'thread-123',
     };
 
     const mockUserRepository = new UserRepository();
@@ -60,7 +56,7 @@ describe('AddCommentUseCase', () => {
     });
 
     // Action & Assert
-    await expect(addCommentUseCase.execute(useCasePayload)).rejects.toThrowError();
+    await expect(addCommentUseCase.execute('thread-123', 'user-123', useCasePayload)).rejects.toThrowError();
 
     expect(mockUserRepository.getUserById).toHaveBeenCalledWith('user-123');
     expect(mockThreadRepository.getThreadById).toHaveBeenCalledWith('thread-123');
@@ -71,8 +67,6 @@ describe('AddCommentUseCase', () => {
     // Arrange
     const useCasePayload = {
       content: 'lorem ipsum',
-      owner: 'user-123',
-      threadId: 'thread-123',
       parentCommentId: 'comment-123',
     };
 
@@ -92,7 +86,7 @@ describe('AddCommentUseCase', () => {
     });
 
     // Action & Assert
-    await expect(addCommentUseCase.execute(useCasePayload)).rejects.toThrowError();
+    await expect(addCommentUseCase.execute('thread-123', 'user-123', useCasePayload)).rejects.toThrowError();
 
     expect(mockUserRepository.getUserById).toHaveBeenCalledWith('user-123');
     expect(mockThreadRepository.getThreadById).toHaveBeenCalledWith('thread-123');
@@ -104,8 +98,6 @@ describe('AddCommentUseCase', () => {
     // Arange
     const useCasePayload = {
       content: 'lorem ipsum',
-      owner: 'user-123',
-      threadId: 'thread-123',
     };
     const mockThread = new Thread({
       id: 'thread-123',
@@ -122,7 +114,7 @@ describe('AddCommentUseCase', () => {
       password: 'secret',
     });
     const mockComment = new Comment({
-      id: 'thread-123',
+      id: 'comment-123',
       content: 'lorem ipsum',
       user_id: 'user-123',
       thread_id: 'thread-123',
@@ -147,11 +139,11 @@ describe('AddCommentUseCase', () => {
     });
 
     // Action
-    const addedComment = await addCommentUseCase.execute(useCasePayload);
+    const addedComment = await addCommentUseCase.execute('thread-123', 'user-123', useCasePayload);
 
     // Assert
     expect(addedComment).toStrictEqual(new Comment({
-      id: 'thread-123',
+      id: 'comment-123',
       content: 'lorem ipsum',
       user_id: 'user-123',
       thread_id: 'thread-123',
@@ -161,7 +153,7 @@ describe('AddCommentUseCase', () => {
       is_delete: false,
     }));
     expect(mockCommentRepository.addComment).toBeCalledTimes(1);
-    expect(mockCommentRepository.addComment).toHaveBeenCalledWith(new NewComment({
+    expect(mockCommentRepository.addComment).toHaveBeenCalledWith('thread-123', 'user-123', new NewComment({
       content: 'lorem ipsum',
       owner: 'user-123',
       threadId: 'thread-123',

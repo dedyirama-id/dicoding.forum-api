@@ -3,24 +3,20 @@ class NewComment {
     this._verifyPayload(payload);
 
     this.content = payload.content;
-    this.owner = payload.owner;
-    this.threadId = payload.threadId;
     this.parentCommentId = payload.parentCommentId;
   }
 
   _verifyPayload(payload) {
     const {
-      content, owner, threadId, parentCommentId,
+      content, parentCommentId,
     } = payload;
 
-    if (!content || !owner || !threadId) {
+    if (!content) {
       throw new Error('NEW_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
     }
 
     if (
       typeof content !== 'string'
-      || typeof owner !== 'string'
-      || typeof threadId !== 'string'
       || (parentCommentId && typeof parentCommentId !== 'string')
     ) {
       throw new Error('NEW_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');

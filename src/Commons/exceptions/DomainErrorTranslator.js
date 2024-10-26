@@ -41,7 +41,7 @@ DomainErrorTranslator._directories = {
   'ADD_THREAD_USE_CASE.INVALID_USER_ID': new InvariantError('thread owner tidak terdaftar'),
 
   // DeleteCommentUseCase
-  'DELETE_COMMENT_USE_CASE.USER_ID_DONT_MATCH': new AuthorizationError('user bukan pemilik komentar'),
+  'DELETE_COMMENT_USE_CASE.USER_ID_DO_NOT_MATCH': new AuthorizationError('user bukan pemilik komentar'),
   'DELETE_COMMENT_USE_CASE.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('harus mengirimkan userId dan commentId'),
   'DELETE_COMMENT_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('userId dan commentId harus string'),
 

@@ -39,7 +39,7 @@ describe('CommentRepositoryPostgres', () => {
       await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
 
       // Action
-      await commentRepository.addComment(newComment);
+      await commentRepository.addComment('thread-123', 'user-123', newComment);
 
       // Assert
       const addedComment = await CommentsTableTestHelper.findCommentById('comment-123');
@@ -60,7 +60,7 @@ describe('CommentRepositoryPostgres', () => {
       await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
 
       // Action
-      const addedComment = await commentRepository.addComment(newComment);
+      const addedComment = await commentRepository.addComment('thread-123', 'user-123', newComment);
 
       // Assert
       expect(addedComment).toStrictEqual(new Comment({
@@ -91,7 +91,7 @@ describe('CommentRepositoryPostgres', () => {
       await UsersTableTestHelper.addUser({ id: 'user-123' });
       await ThreadsTableTestHelper.addThread({ id: 'thread-123' });
 
-      await commentRepository.addComment(newComment);
+      await commentRepository.addComment('thread-123', 'user-123', newComment);
 
       // Action
       await commentRepository.deleteCommentById('comment-123');
@@ -116,7 +116,7 @@ describe('CommentRepositoryPostgres', () => {
       await UsersTableTestHelper.addUser({ id: 'user-123' });
       await ThreadsTableTestHelper.addThread({ id: 'thread-123' });
 
-      await commentRepository.addComment(newComment);
+      await commentRepository.addComment('thread-123', 'user-123', newComment);
       await commentRepository.deleteCommentById('comment-123');
 
       // Action & Assert
@@ -140,7 +140,7 @@ describe('CommentRepositoryPostgres', () => {
       await UsersTableTestHelper.addUser({ id: 'user-123' });
       await ThreadsTableTestHelper.addThread({ id: 'thread-123' });
 
-      await commentRepository.addComment(newComment);
+      await commentRepository.addComment('thread-123', 'user-123', newComment);
 
       // Action
       const getComment = await commentRepository.getCommentById('comment-123');
@@ -165,7 +165,7 @@ describe('CommentRepositoryPostgres', () => {
       await UsersTableTestHelper.addUser({ id: 'user-123' });
       await ThreadsTableTestHelper.addThread({ id: 'thread-123' });
 
-      await commentRepository.addComment(newComment);
+      await commentRepository.addComment('thread-123', 'user-123', newComment);
       await commentRepository.deleteCommentById('comment-123');
 
       // Action & Assert
