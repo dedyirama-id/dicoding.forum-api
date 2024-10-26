@@ -25,7 +25,6 @@ describe('ThreadRepository postgres', () => {
     it('should persist new thread and return added thread correctly', async () => {
       // Arrange
       const newThread = new NewThread({
-        owner: 'user-123',
         title: 'New title',
         body: 'lorem ipsum',
       });
@@ -35,7 +34,7 @@ describe('ThreadRepository postgres', () => {
       await UsersTableTestHelper.addUser({ id: 'user-123' });
 
       // Action
-      await threadRepository.addThread(newThread);
+      await threadRepository.addThread('user-123', newThread);
 
       // Assert
       const addedThreads = await ThreadsTableTestHelper.findThreadById('thread-123');
@@ -45,7 +44,6 @@ describe('ThreadRepository postgres', () => {
     it('should return added thread correctly', async () => {
       // Arrange
       const newThread = new NewThread({
-        owner: 'user-123',
         title: 'new title',
         body: 'lorem ipsum',
       });
@@ -54,7 +52,7 @@ describe('ThreadRepository postgres', () => {
       await UsersTableTestHelper.addUser({ id: 'user-123' });
 
       // Action
-      const addedThread = await threadRepository.addThread(newThread);
+      const addedThread = await threadRepository.addThread('user-123', newThread);
 
       // Assert
       expect(addedThread).toStrictEqual(new Thread({

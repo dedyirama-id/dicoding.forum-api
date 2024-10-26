@@ -9,7 +9,6 @@ describe('AddThreadUseCase', () => {
   it('should throw error when add thread with invalid owner id', async () => {
     // Arange
     const useCasePayload = {
-      owner: 'user-123',
       title: 'New thread',
       body: 'lorem ipsum',
     };
@@ -26,22 +25,21 @@ describe('AddThreadUseCase', () => {
     });
 
     // Action & Assert
-    await expect(addThreadUseCase.execute(useCasePayload)).rejects.toThrowError('USER_REPOSITORY.USER_NOT_FOUND');
+    await expect(addThreadUseCase.execute('invalid-user', useCasePayload)).rejects.toThrowError('USER_REPOSITORY.USER_NOT_FOUND');
 
-    expect(mockUserRepository.getUserById).toHaveBeenCalledWith('user-123');
+    expect(mockUserRepository.getUserById).toHaveBeenCalledWith('invalid-user');
     expect(mockThreadRepository.addThread).not.toBeCalled();
   });
 
   it('should orchestrating the add thread action correctly', async () => {
     // Arrange
     const useCasePayload = {
-      owner: 'user-123',
       title: 'New thread',
       body: 'lorem ipsum',
     };
     const mockThread = new Thread({
       id: 'thread-123',
-      user_id: useCasePayload.owner,
+      user_id: 'user-123',
       title: useCasePayload.title,
       body: useCasePayload.body,
       created_at: new Date(),
@@ -66,7 +64,7 @@ describe('AddThreadUseCase', () => {
     });
 
     // Action
-    const addedThread = await addThreadUseCase.execute(useCasePayload);
+    const addedThread = await addThreadUseCase.execute('user-123', useCasePayload);
 
     // Assert
     expect(addedThread).toStrictEqual(new Thread({
@@ -79,8 +77,7 @@ describe('AddThreadUseCase', () => {
     }));
 
     expect(mockThreadRepository.addThread).toHaveBeenCalledTimes(1);
-    expect(mockThreadRepository.addThread).toHaveBeenCalledWith(new NewThread({
-      owner: 'user-123',
+    expect(mockThreadRepository.addThread).toHaveBeenCalledWith('user-123', new NewThread({
       title: 'New thread',
       body: 'lorem ipsum',
     }));
