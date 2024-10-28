@@ -94,7 +94,7 @@ describe('AddCommentUseCase', () => {
     expect(mockCommentRepository.addComment).not.toBeCalled();
   });
 
-  it('should orchestrating the add thread action', async () => {
+  it('should orchestrating the add comment action', async () => {
     // Arange
     const useCasePayload = {
       content: 'lorem ipsum',

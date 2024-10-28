@@ -1,6 +1,6 @@
 const GetComment = require('../GetComment');
 
-describe('Comment entities', () => {
+describe('GetComment entities', () => {
   it('should throw error when payload does not contain needed properties', () => {
     // Arrange
     const payload1 = {
