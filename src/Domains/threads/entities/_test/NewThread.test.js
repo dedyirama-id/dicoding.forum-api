@@ -45,7 +45,7 @@ describe('NewThread entities', () => {
 
     // Assert
     expect(newThread).toBeInstanceOf(NewThread);
-    expect(newThread.title).toEqual(payload.title);
-    expect(newThread.body).toEqual(payload.body);
+    expect(newThread.title).toEqual('new title');
+    expect(newThread.body).toEqual('lorem ipsum');
   });
 });

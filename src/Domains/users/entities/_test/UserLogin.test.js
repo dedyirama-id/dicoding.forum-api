@@ -43,7 +43,7 @@ describe('UserLogin entities', () => {
 
     // Assert
     expect(userLogin).toBeInstanceOf(UserLogin);
-    expect(userLogin.username).toEqual(payload.username);
-    expect(userLogin.password).toEqual(payload.password);
+    expect(userLogin.username).toEqual('dicoding');
+    expect(userLogin.password).toEqual('12345');
   });
 });

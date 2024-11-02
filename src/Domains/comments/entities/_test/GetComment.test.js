@@ -97,7 +97,21 @@ describe('GetComment entities', () => {
       created_at: new Date(),
       is_delete: false,
     };
-    const payload2 = {
+
+    // Action
+    const comment = new GetComment(payload1);
+
+    // Assert
+    expect(comment).toBeInstanceOf(GetComment);
+    expect(comment.id).toEqual('comment-123');
+    expect(comment.content).toEqual('lorem ipsum');
+    expect(comment.username).toEqual('dicoding');
+    expect(comment.date).toBeInstanceOf(Date);
+  });
+
+  it('should return deleted comment content correctly', () => {
+    // Arrange
+    const payload = {
       id: 'comment-123',
       content: 'lorem ipsum',
       username: 'dicoding',
@@ -106,20 +120,14 @@ describe('GetComment entities', () => {
     };
 
     // Action
-    const comment1 = new GetComment(payload1);
-    const comment2 = new GetComment(payload2);
+    const comment = new GetComment(payload);
 
     // Assert
-    expect(comment1).toBeInstanceOf(GetComment);
-    expect(comment1.id).toEqual(payload1.id);
-    expect(comment1.content).toEqual(payload1.content);
-    expect(comment1.username).toEqual(payload1.username);
-    expect(comment1.date).toEqual(payload1.created_at);
-
-    expect(comment2).toBeInstanceOf(GetComment);
-    expect(comment2.id).toEqual(payload2.id);
-    expect(comment2.content).toEqual('**komentar telah dihapus**');
-    expect(comment2.username).toEqual(payload2.username);
-    expect(comment2.date).toEqual(payload2.created_at);
+    expect(comment).toBeInstanceOf(GetComment);
+    expect(comment.id).toEqual('comment-123');
+    expect(comment.content).toEqual('**komentar telah dihapus**');
+    expect(comment.username).toEqual('dicoding');
+    expect(comment.date).toBeInstanceOf(Date);
+    expect(comment.date).toEqual(payload.created_at);
   });
 });

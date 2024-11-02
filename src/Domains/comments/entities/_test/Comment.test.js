@@ -238,14 +238,14 @@ describe('Comment entities', () => {
 
     // Assert
     expect(comment).toBeInstanceOf(Comment);
-    expect(comment.id).toEqual(payload.id);
-    expect(comment.content).toEqual(payload.content);
-    expect(comment.owner).toEqual(payload.user_id);
-    expect(comment.threadId).toEqual(payload.thread_id);
-    expect(comment.parentCommentId).toEqual(payload.parent_comment_id);
+    expect(comment.id).toEqual('comment-123');
+    expect(comment.content).toEqual('lorem ipsum');
+    expect(comment.owner).toEqual('user-123');
+    expect(comment.threadId).toEqual('thread-123');
+    expect(comment.parentCommentId).toEqual(null);
     expect(comment.createdAt).toBeInstanceOf(Date);
     expect(comment.updatedAt).toBeInstanceOf(Date);
-    expect(comment.username).toEqual(payload.username);
+    expect(comment.username).toEqual('dicoding');
   });
 
   it('should return deleted comment content correctly', () => {
@@ -267,13 +267,15 @@ describe('Comment entities', () => {
 
     // Assert
     expect(comment).toBeInstanceOf(Comment);
-    expect(comment.id).toEqual(payload.id);
+    expect(comment.id).toEqual('comment-123');
     expect(comment.content).toEqual('**komentar telah dihapus**');
-    expect(comment.owner).toEqual(payload.user_id);
-    expect(comment.threadId).toEqual(payload.thread_id);
-    expect(comment.parentCommentId).toEqual(payload.parent_comment_id);
+    expect(comment.owner).toEqual('user-123');
+    expect(comment.threadId).toEqual('thread-123');
+    expect(comment.parentCommentId).toEqual(null);
     expect(comment.createdAt).toBeInstanceOf(Date);
+    expect(comment.createdAt).toEqual(payload.created_at);
     expect(comment.updatedAt).toBeInstanceOf(Date);
-    expect(comment.username).toEqual(payload.username);
+    expect(comment.updatedAt).toEqual(payload.updated_at);
+    expect(comment.username).toEqual('dicoding');
   });
 });

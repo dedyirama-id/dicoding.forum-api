@@ -8,7 +8,6 @@ describe('DeleteCommentUseCase', () => {
     const userId = 'user-123';
     const mockCommentRepository = new CommentRepository();
 
-    mockCommentRepository.getCommentById = jest.fn().mockResolvedValue({ owner: 'user-123' });
     mockCommentRepository.verifyCommentAvailability = jest.fn().mockResolvedValue();
     mockCommentRepository.verifyCommentOwner = jest.fn().mockResolvedValue();
     mockCommentRepository.deleteCommentById = jest.fn().mockResolvedValue();
@@ -20,7 +19,7 @@ describe('DeleteCommentUseCase', () => {
     // Action & Assert
     await expect(deleteCommentUseCase.execute(commentId, userId)).resolves.not.toThrowError();
 
-    expect(mockCommentRepository.getCommentById).toHaveBeenCalledWith('comment-123');
+    expect(mockCommentRepository.verifyCommentAvailability).toHaveBeenCalledWith('comment-123');
     expect(mockCommentRepository.verifyCommentOwner).toHaveBeenCalledWith('comment-123', 'user-123');
     expect(mockCommentRepository.deleteCommentById).toHaveBeenCalledWith('comment-123');
   });

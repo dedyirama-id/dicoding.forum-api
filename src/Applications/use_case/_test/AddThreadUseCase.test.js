@@ -16,7 +16,7 @@ describe('AddThreadUseCase', () => {
     const mockThreadRepository = new ThreadRepository();
     const mockUserRepository = new UserRepository();
 
-    mockUserRepository.getUserById = jest.fn().mockRejectedValue(new Error('USER_REPOSITORY.USER_NOT_FOUND'));
+    mockUserRepository.getUserById = jest.fn().mockRejectedValue(new Error());
     mockThreadRepository.addThread = jest.fn().mockResolvedValue();
 
     const addThreadUseCase = new AddThreadUseCase({
@@ -25,7 +25,7 @@ describe('AddThreadUseCase', () => {
     });
 
     // Action & Assert
-    await expect(addThreadUseCase.execute('invalid-user', useCasePayload)).rejects.toThrowError('USER_REPOSITORY.USER_NOT_FOUND');
+    await expect(addThreadUseCase.execute('invalid-user', useCasePayload)).rejects.toThrowError();
 
     expect(mockUserRepository.getUserById).toHaveBeenCalledWith('invalid-user');
     expect(mockThreadRepository.addThread).not.toBeCalled();

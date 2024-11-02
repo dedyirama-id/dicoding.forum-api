@@ -39,7 +39,7 @@ describe('NewComment entities', () => {
 
     // Assert
     expect(newComment).toBeInstanceOf(NewComment);
-    expect(newComment.content).toEqual(payload.content);
-    expect(newComment.parentCommentId).toEqual(payload.parentCommentId);
+    expect(newComment.content).toEqual('lorem ipsum');
+    expect(newComment.parentCommentId).toEqual(null);
   });
 });

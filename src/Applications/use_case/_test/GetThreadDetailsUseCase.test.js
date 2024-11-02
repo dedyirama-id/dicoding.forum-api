@@ -25,14 +25,17 @@ describe('GetThreadDetailsUseCase', () => {
 
   it('should orchestrate the get thread details action correctly with replies and deleted replies', async () => {
     // Arrange
+    const createdAt = new Date();
+    const updatedAt = new Date();
+
     const thread = new Thread({
       id: 'thread-123',
       title: 'new title',
       body: 'lorem ipsum',
       user_id: 'user-123',
       username: 'dicoding',
-      created_at: new Date(),
-      updated_at: new Date(),
+      created_at: createdAt,
+      updated_at: updatedAt,
     });
 
     const parentComment = new Comment({
@@ -41,8 +44,8 @@ describe('GetThreadDetailsUseCase', () => {
       user_id: 'user-123',
       thread_id: 'thread-123',
       parent_comment_id: null,
-      created_at: new Date(),
-      updated_at: new Date(),
+      created_at: createdAt,
+      updated_at: updatedAt,
       is_delete: false,
       username: 'dicoding',
     });
@@ -53,8 +56,8 @@ describe('GetThreadDetailsUseCase', () => {
       user_id: 'user-456',
       thread_id: 'thread-123',
       parent_comment_id: 'comment-123',
-      created_at: new Date(),
-      updated_at: new Date(),
+      created_at: createdAt,
+      updated_at: updatedAt,
       is_delete: false,
       username: 'johndoe',
     });
@@ -65,8 +68,8 @@ describe('GetThreadDetailsUseCase', () => {
       user_id: 'user-789',
       thread_id: 'thread-123',
       parent_comment_id: 'comment-123',
-      created_at: new Date(),
-      updated_at: new Date(),
+      created_at: createdAt,
+      updated_at: updatedAt,
       is_delete: true,
       username: 'janedoe',
     });

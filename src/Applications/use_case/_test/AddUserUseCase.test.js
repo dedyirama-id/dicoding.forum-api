@@ -37,17 +37,42 @@ describe('AddUserUseCase', () => {
     // Assert
     expect(registeredUser).toStrictEqual(new RegisteredUser({
       id: 'user-123',
-      username: useCasePayload.username,
-      fullname: useCasePayload.fullname,
+      username: 'dicoding',
+      fullname: 'Dicoding Indonesia',
     }));
 
-    expect(mockUserRepository.verifyAvailableUsername).toBeCalledWith(useCasePayload.username);
-    expect(mockPasswordHash.hash).toBeCalledWith(useCasePayload.password);
+    expect(mockUserRepository.verifyAvailableUsername).toBeCalledWith('dicoding');
+    expect(mockPasswordHash.hash).toBeCalledWith('secret');
     expect(mockUserRepository.addUser).toBeCalledWith(new RegisterUser({
-      username: useCasePayload.username,
+      username: 'dicoding',
       password: 'encrypted_password',
-      fullname: useCasePayload.fullname,
+      fullname: 'Dicoding Indonesia',
     }));
     expect(mockUserRepository.addUser).toBeCalledTimes(1);
+  });
+
+  it('should throw error when username is not available', async () => {
+    // Arrange
+    const useCasePayload = {
+      username: 'dicoding',
+      password: 'secret',
+      fullname: 'Dicoding Indonesia',
+    };
+
+    const mockUserRepository = new UserRepository();
+    const mockPasswordHash = new PasswordHash();
+
+    mockUserRepository.verifyAvailableUsername = jest.fn().mockRejectedValue(new Error());
+    mockPasswordHash.hash = jest.fn();
+
+    const getUserUseCase = new AddUserUseCase({
+      userRepository: mockUserRepository,
+      passwordHash: mockPasswordHash,
+    });
+
+    // Action & Assert
+    await expect(getUserUseCase.execute(useCasePayload)).rejects.toThrowError();
+    expect(mockUserRepository.verifyAvailableUsername).toBeCalledWith('dicoding');
+    expect(mockPasswordHash.hash).not.toBeCalled();
   });
 });

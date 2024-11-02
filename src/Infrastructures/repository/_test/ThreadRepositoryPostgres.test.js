@@ -22,7 +22,7 @@ describe('ThreadRepository postgres', () => {
   });
 
   describe('addThread function', () => {
-    it('should persist new thread and return added thread correctly', async () => {
+    it('should persist new thread correctly', async () => {
       // Arrange
       const newThread = new NewThread({
         title: 'New title',
@@ -37,7 +37,7 @@ describe('ThreadRepository postgres', () => {
       await threadRepository.addThread('user-123', newThread);
 
       // Assert
-      const addedThreads = await ThreadsTableTestHelper.findThreadById('thread-123');
+      const addedThreads = await ThreadsTableTestHelper.findThreadsById('thread-123');
       expect(addedThreads).toHaveLength(1);
     });
 
@@ -60,6 +60,28 @@ describe('ThreadRepository postgres', () => {
         title: 'new title',
         user_id: 'user-123',
       }));
+    });
+
+    it('should store to database correctly', async () => {
+      // Arrange
+      const newThread = new NewThread({
+        title: 'new title',
+        body: 'lorem ipsum',
+      });
+      const fakeIdGenerator = () => '123';
+      const threadRepository = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+
+      // Action
+      await threadRepository.addThread('user-123', newThread);
+
+      // Assert
+      const threads = await ThreadsTableTestHelper.findThreadsById('thread-123');
+      expect(threads).toHaveLength(1);
+      expect(threads[0].id).toBe('thread-123');
+      expect(threads[0].title).toBe('new title');
+      expect(threads[0].body).toBe('lorem ipsum');
+      expect(threads[0].user_id).toBe('user-123');
     });
   });
 

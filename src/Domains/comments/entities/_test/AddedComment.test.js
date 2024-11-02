@@ -65,7 +65,7 @@ describe('AddedComment entities', () => {
     expect(() => new AddedComment(payload4)).toThrowError('ADDED_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
-  it('should create Comment entities correctly', () => {
+  it('should create AddedComment entities correctly', () => {
     // Arrange
     const payload = {
       id: 'comment-123',
@@ -79,9 +79,9 @@ describe('AddedComment entities', () => {
 
     // Assert
     expect(comment).toBeInstanceOf(AddedComment);
-    expect(comment.id).toEqual(payload.id);
-    expect(comment.content).toEqual(payload.content);
-    expect(comment.owner).toEqual(payload.user_id);
+    expect(comment.id).toEqual('comment-123');
+    expect(comment.content).toEqual('lorem ipsum');
+    expect(comment.owner).toEqual('user-123');
   });
 
   it('should return deleted comment content correctly', () => {
@@ -98,8 +98,8 @@ describe('AddedComment entities', () => {
 
     // Assert
     expect(comment).toBeInstanceOf(AddedComment);
-    expect(comment.id).toEqual(payload.id);
+    expect(comment.id).toEqual('comment-123');
     expect(comment.content).toEqual('**komentar telah dihapus**');
-    expect(comment.owner).toEqual(payload.user_id);
+    expect(comment.owner).toEqual('user-123');
   });
 });

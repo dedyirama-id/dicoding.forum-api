@@ -11,7 +11,7 @@ const AuthenticationsTableTestHelper = {
     await pool.query(query);
   },
 
-  async findToken(token) {
+  async findTokens(token) {
     const query = {
       text: 'SELECT token FROM authentications WHERE token = $1',
       values: [token],

@@ -5,7 +5,7 @@ describe('DeleteAuthenticationUseCase', () => {
   it('should throw error if use case payload not contain refresh token', async () => {
     // Arrange
     const useCasePayload = {};
-    const deleteAuthenticationUseCase = new DeleteAuthenticationUseCase({});
+    const deleteAuthenticationUseCase = new DeleteAuthenticationUseCase({ authenticationRepository: {} });
 
     // Action & Assert
     await expect(deleteAuthenticationUseCase.execute(useCasePayload))
@@ -18,7 +18,7 @@ describe('DeleteAuthenticationUseCase', () => {
     const useCasePayload = {
       refreshToken: 123,
     };
-    const deleteAuthenticationUseCase = new DeleteAuthenticationUseCase({});
+    const deleteAuthenticationUseCase = new DeleteAuthenticationUseCase({ authenticationRepository: {} });
 
     // Action & Assert
     await expect(deleteAuthenticationUseCase.execute(useCasePayload))
@@ -45,7 +45,9 @@ describe('DeleteAuthenticationUseCase', () => {
     // Assert
     expect(mockAuthenticationRepository.checkAvailabilityToken)
       .toHaveBeenCalledWith(useCasePayload.refreshToken);
+    expect(mockAuthenticationRepository.checkAvailabilityToken).toBeCalledTimes(1);
     expect(mockAuthenticationRepository.deleteToken)
       .toHaveBeenCalledWith(useCasePayload.refreshToken);
+    expect(mockAuthenticationRepository.deleteToken).toBeCalledTimes(1);
   });
 });

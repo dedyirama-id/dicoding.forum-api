@@ -159,11 +159,14 @@ describe('Thread entities', () => {
 
     // Assert
     expect(thread).toBeInstanceOf(Thread);
-    expect(thread.id).toEqual(payload.id);
-    expect(thread.title).toEqual(payload.title);
-    expect(thread.body).toEqual(payload.body);
-    expect(thread.owner).toEqual(payload.user_id);
+    expect(thread.id).toEqual('thread-123');
+    expect(thread.title).toEqual('new title');
+    expect(thread.body).toEqual('lorem ipsum');
+    expect(thread.owner).toEqual('user-123');
+    expect(thread.username).toEqual('dicoding');
+    expect(thread.createdAt).toBeInstanceOf(Date);
     expect(thread.createdAt).toEqual(payload.created_at);
+    expect(thread.updatedAt).toBeInstanceOf(Date);
     expect(thread.updatedAt).toEqual(payload.updated_at);
   });
 });

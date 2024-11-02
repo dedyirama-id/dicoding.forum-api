@@ -27,7 +27,7 @@ describe('CommentRepositoryPostgres', () => {
   });
 
   describe('addComment function', () => {
-    it('should persist new comment and return added comment correctly', async () => {
+    it('should persist new comment correctly', async () => {
       // Arrange
       const newComment = new NewComment({
         content: 'lorem ipsum',
@@ -44,11 +44,36 @@ describe('CommentRepositoryPostgres', () => {
       await commentRepository.addComment('thread-123', 'user-123', newComment);
 
       // Assert
-      const addedComment = await CommentsTableTestHelper.findCommentById('comment-123');
+      const addedComment = await CommentsTableTestHelper.findCommentsById('comment-123');
       expect(addedComment).toHaveLength(1);
     });
 
-    it('should persist new comment and return added comment correctly', async () => {
+    it('should return added comment correctly', async () => {
+      // Arrange
+      const newComment = new NewComment({
+        content: 'lorem ipsum',
+        owner: 'user-123',
+        threadId: 'thread-123',
+      });
+
+      const fakeIdGenerator = () => '123';
+      const commentRepository = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+      await UsersTableTestHelper.addUser({ id: 'user-123', username: 'dicoding' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
+
+      // Action
+      const addedComment = await commentRepository.addComment('thread-123', 'user-123', newComment);
+
+      // Assert
+      expect(addedComment).toStrictEqual(new AddedComment({
+        id: 'comment-123',
+        content: 'lorem ipsum',
+        user_id: 'user-123',
+        is_delete: false,
+      }));
+    });
+
+    it('should store comment to database correctly', async () => {
       // Arrange
       const newComment = new NewComment({
         content: 'lorem ipsum',
@@ -62,15 +87,14 @@ describe('CommentRepositoryPostgres', () => {
       await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
 
       // Action
-      const addedComment = await commentRepository.addComment('thread-123', 'user-123', newComment);
+      await commentRepository.addComment('thread-123', 'user-123', newComment);
 
       // Assert
-      expect(addedComment).toStrictEqual(new AddedComment({
-        id: 'comment-123',
-        content: 'lorem ipsum',
-        user_id: 'user-123',
-        is_delete: false,
-      }));
+      const addedComment = await CommentsTableTestHelper.findCommentsById('comment-123');
+      expect(addedComment).toHaveLength(1);
+      expect(addedComment[0].content).toEqual('lorem ipsum');
+      expect(addedComment[0].user_id).toEqual('user-123');
+      expect(addedComment[0].thread_id).toEqual('thread-123');
     });
   });
 
@@ -95,7 +119,7 @@ describe('CommentRepositoryPostgres', () => {
       await commentRepository.deleteCommentById('comment-123');
 
       // Assert
-      const comment = await CommentsTableTestHelper.findCommentById('comment-123');
+      const comment = await CommentsTableTestHelper.findCommentsById('comment-123');
       expect(comment).toHaveLength(1);
       expect(comment[0].is_delete).toBe(true);
     });
