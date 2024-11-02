@@ -9,6 +9,7 @@ describe('Thread entities', () => {
       user_id: 'user-123',
       created_at: new Date(),
       updated_at: new Date(),
+      username: 'dicoding',
     };
     const payload2 = {
       id: 'thread-123',
@@ -16,6 +17,7 @@ describe('Thread entities', () => {
       user_id: 'user-123',
       created_at: new Date(),
       updated_at: new Date(),
+      username: 'dicoding',
     };
     const payload3 = {
       id: 'thread-123',
@@ -23,6 +25,7 @@ describe('Thread entities', () => {
       user_id: 'user-123',
       created_at: new Date(),
       updated_at: new Date(),
+      username: 'dicoding',
     };
     const payload4 = {
       id: 'thread-123',
@@ -30,14 +33,23 @@ describe('Thread entities', () => {
       body: 'lorem ipsum',
       created_at: new Date(),
       updated_at: new Date(),
+      username: 'dicoding',
     };
     const payload5 = {
       id: 'thread-123',
       title: 'new title',
       body: 'lorem ipsum',
       updated_at: new Date(),
+      username: 'dicoding',
     };
     const payload6 = {
+      id: 'thread-123',
+      title: 'new title',
+      body: 'lorem ipsum',
+      created_at: new Date(),
+      username: 'dicoding',
+    };
+    const payload7 = {
       id: 'thread-123',
       title: 'new title',
       body: 'lorem ipsum',
@@ -51,6 +63,7 @@ describe('Thread entities', () => {
     expect(() => new Thread(payload4)).toThrowError('THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
     expect(() => new Thread(payload5)).toThrowError('THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
     expect(() => new Thread(payload6)).toThrowError('THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
+    expect(() => new Thread(payload7)).toThrowError('THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
   });
 
   it('should throw error when payload not meet data type specification', () => {
@@ -62,6 +75,7 @@ describe('Thread entities', () => {
       user_id: 'user-123',
       created_at: new Date(),
       updated_at: new Date(),
+      username: 'dicoding',
     };
     const payload2 = {
       id: 'thread-123',
@@ -70,6 +84,7 @@ describe('Thread entities', () => {
       user_id: 'user-123',
       created_at: new Date(),
       updated_at: new Date(),
+      username: 'dicoding',
     };
     const payload3 = {
       id: 'thread-123',
@@ -78,6 +93,7 @@ describe('Thread entities', () => {
       user_id: 'user-123',
       created_at: new Date(),
       updated_at: new Date(),
+      username: 'dicoding',
     };
     const payload4 = {
       id: 'thread-123',
@@ -86,6 +102,7 @@ describe('Thread entities', () => {
       user_id: 123,
       created_at: new Date(),
       updated_at: new Date(),
+      username: 'dicoding',
     };
     const payload5 = {
       id: 'thread-123',
@@ -94,6 +111,7 @@ describe('Thread entities', () => {
       user_id: 123,
       created_at: 123,
       updated_at: new Date(),
+      username: 'dicoding',
     };
     const payload6 = {
       id: 'thread-123',
@@ -102,6 +120,16 @@ describe('Thread entities', () => {
       user_id: 123,
       created_at: new Date(),
       updated_at: 123,
+      username: 'dicoding',
+    };
+    const payload7 = {
+      id: 'thread-123',
+      title: 'title',
+      body: 'lorem ipsum',
+      user_id: 123,
+      created_at: new Date(),
+      updated_at: 123,
+      username: 123,
     };
 
     // Action & Assert
@@ -111,6 +139,7 @@ describe('Thread entities', () => {
     expect(() => new Thread(payload4)).toThrowError('THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
     expect(() => new Thread(payload5)).toThrowError('THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
     expect(() => new Thread(payload6)).toThrowError('THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    expect(() => new Thread(payload7)).toThrowError('THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
   it('should create Thread entities correctly', () => {
@@ -122,6 +151,7 @@ describe('Thread entities', () => {
       user_id: 'user-123',
       created_at: new Date(),
       updated_at: new Date(),
+      username: 'dicoding',
     };
 
     // Action

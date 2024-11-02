@@ -8,14 +8,23 @@ class Thread {
     this.owner = payload.user_id;
     this.createdAt = payload.created_at;
     this.updatedAt = payload.updated_at;
+    this.username = payload.username;
   }
 
   _verifyPayload(payload) {
     const {
-      id, title, body, user_id: userId, created_at: createdAt, updated_at: updatedAt,
+      id, title, body, user_id: userId, created_at: createdAt, updated_at: updatedAt, username,
     } = payload;
 
-    if (!id || !title || !body || !userId || !createdAt || !updatedAt) {
+    if (
+      !id
+      || !title
+      || !body
+      || !userId
+      || !createdAt
+      || !updatedAt
+      || !username
+    ) {
       throw new Error('THREAD.NOT_CONTAIN_NEEDED_PROPERTY');
     }
 
@@ -24,6 +33,7 @@ class Thread {
       || typeof title !== 'string'
       || typeof body !== 'string'
       || typeof userId !== 'string'
+      || typeof username !== 'string'
       || createdAt instanceof Date === false
       || updatedAt instanceof Date === false
     ) {

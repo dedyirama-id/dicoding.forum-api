@@ -82,6 +82,18 @@ class UserRepositoryPostgres extends UserRepository {
 
     return new RegisteredUser({ ...result.rows[0] });
   }
+
+  async verifyUserAvailability(id) {
+    const query = {
+      text: 'SELECT * FROM users WHERE id = $1',
+      values: [id],
+    };
+    const result = await this._pool.query(query);
+
+    if (result.rowCount === 0) {
+      throw new NotFoundError('user tidak ditemukan');
+    }
+  }
 }
 
 module.exports = UserRepositoryPostgres;

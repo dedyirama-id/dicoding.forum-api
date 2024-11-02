@@ -44,6 +44,7 @@ describe('AddThreadUseCase', () => {
       body: useCasePayload.body,
       created_at: new Date(),
       updated_at: new Date(),
+      username: 'dicoding',
     });
     const mockRegisteredUser = new RegisteredUser({
       id: 'user-123',
@@ -74,6 +75,7 @@ describe('AddThreadUseCase', () => {
       body: useCasePayload.body,
       created_at: mockThread.createdAt,
       updated_at: mockThread.updatedAt,
+      username: 'dicoding',
     }));
 
     expect(mockThreadRepository.addThread).toHaveBeenCalledTimes(1);

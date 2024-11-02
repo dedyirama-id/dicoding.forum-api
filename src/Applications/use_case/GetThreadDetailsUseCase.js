@@ -10,9 +10,35 @@ class GetThreadDetailsUseCase {
     const thread = await this._threadRepository.getThreadById(threadId);
     const comments = await this._commentRepository.getAllCommentsByThreadId(threadId);
 
+    const parentComments = comments.filter((comment) => comment.parentCommentId === null);
+    const replies = comments.filter((comment) => comment.parentCommentId !== null);
+
+    const commentsWithReplies = parentComments.map((comment) => {
+      const commentReplies = replies
+        .filter((reply) => reply.parentCommentId === comment.id)
+        .map((reply) => ({
+          id: reply.id,
+          username: reply.username,
+          date: reply.createdAt,
+          content: reply.isDelete ? '**balasan telah dihapus**' : reply.content,
+        }));
+
+      return {
+        id: comment.id,
+        username: comment.username,
+        date: comment.createdAt,
+        content: comment.content,
+        replies: commentReplies,
+      };
+    });
+
     return {
-      ...thread,
-      comments,
+      id: thread.id,
+      title: thread.title,
+      body: thread.body,
+      username: thread.username,
+      date: thread.createdAt,
+      comments: commentsWithReplies,
     };
   }
 

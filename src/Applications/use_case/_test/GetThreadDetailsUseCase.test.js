@@ -1,13 +1,12 @@
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
-const GetComment = require('../../../Domains/comments/entities/GetComment');
-const GetThread = require('../../../Domains/threads/entities/GetThread');
+const Comment = require('../../../Domains/comments/entities/Comment');
+const Thread = require('../../../Domains/threads/entities/Thread');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
-const RegisteredUser = require('../../../Domains/users/entities/RegisteredUser');
 const GetThreadDetailsUseCase = require('../GetThreadDetailsUseCase');
 
 describe('GetThreadDetailsUseCase', () => {
-  it('should throw error when payload is not contain threadId', async () => {
-    // Arange
+  it('should throw error when payload does not contain threadId', async () => {
+    // Arrange
     const getThreadDetailsUseCase = new GetThreadDetailsUseCase({});
     const useCasePayload = undefined;
 
@@ -15,46 +14,72 @@ describe('GetThreadDetailsUseCase', () => {
     await expect(getThreadDetailsUseCase.execute(useCasePayload)).rejects.toThrowError('GET_THREAD_DETAILS_USE_CASE.NOT_CONTAIN_THREAD_ID');
   });
 
-  it('should throw error when given invalid threadId', async () => {
-    // Arange
+  it('should throw error when threadId is not a string', async () => {
+    // Arrange
     const getThreadDetailsUseCase = new GetThreadDetailsUseCase({});
-    const useCasePayload = {
-      threadId: 123,
-    };
+    const useCasePayload = 123;
 
     // Action & Assert
     await expect(getThreadDetailsUseCase.execute(useCasePayload)).rejects.toThrowError('GET_THREAD_DETAILS_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
-  it('should throw orchestrating the get thread details action', async () => {
-    // Arange
-    const thread = new GetThread({
+  it('should orchestrate the get thread details action correctly with replies and deleted replies', async () => {
+    // Arrange
+    const thread = new Thread({
       id: 'thread-123',
       title: 'new title',
       body: 'lorem ipsum',
+      user_id: 'user-123',
       username: 'dicoding',
       created_at: new Date(),
+      updated_at: new Date(),
     });
 
-    const comment = new GetComment({
+    const parentComment = new Comment({
       id: 'comment-123',
       content: 'lorem ipsum',
-      username: 'dicoding',
+      user_id: 'user-123',
+      thread_id: 'thread-123',
+      parent_comment_id: null,
       created_at: new Date(),
+      updated_at: new Date(),
       is_delete: false,
+      username: 'dicoding',
     });
 
-    const user = new RegisteredUser({
-      id: 'user-123',
-      username: 'dicoding',
-      fullname: 'Dicoding Indonesia',
+    const replyComment = new Comment({
+      id: 'reply-456',
+      content: 'this is a reply',
+      user_id: 'user-456',
+      thread_id: 'thread-123',
+      parent_comment_id: 'comment-123',
+      created_at: new Date(),
+      updated_at: new Date(),
+      is_delete: false,
+      username: 'johndoe',
+    });
+
+    const deletedReply = new Comment({
+      id: 'reply-789',
+      content: 'this reply has been deleted',
+      user_id: 'user-789',
+      thread_id: 'thread-123',
+      parent_comment_id: 'comment-123',
+      created_at: new Date(),
+      updated_at: new Date(),
+      is_delete: true,
+      username: 'janedoe',
     });
 
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
 
     mockThreadRepository.getThreadById = jest.fn().mockResolvedValue(thread);
-    mockCommentRepository.getAllCommentsByThreadId = jest.fn().mockResolvedValue([{ ...comment }]);
+    mockCommentRepository.getAllCommentsByThreadId = jest.fn().mockResolvedValue([
+      { ...parentComment },
+      { ...replyComment },
+      { ...deletedReply },
+    ]);
 
     const useCasePayload = 'thread-123';
 
@@ -64,21 +89,35 @@ describe('GetThreadDetailsUseCase', () => {
     });
 
     // Action
-    const commentDetails = await getThreadDetailsUseCase.execute(useCasePayload);
+    const threadDetails = await getThreadDetailsUseCase.execute(useCasePayload);
 
     // Assert
-    expect(commentDetails).toStrictEqual({
+    expect(threadDetails).toStrictEqual({
       id: 'thread-123',
       title: 'new title',
       body: 'lorem ipsum',
-      username: user.username,
-      date: thread.date,
+      username: 'dicoding',
+      date: thread.createdAt,
       comments: [
         {
-          id: comment.id,
-          username: user.username,
-          date: comment.date,
-          content: comment.content,
+          id: 'comment-123',
+          username: 'dicoding',
+          date: parentComment.createdAt,
+          content: 'lorem ipsum',
+          replies: [
+            {
+              id: 'reply-456',
+              username: 'johndoe',
+              date: replyComment.createdAt,
+              content: 'this is a reply',
+            },
+            {
+              id: 'reply-789',
+              username: 'janedoe',
+              date: deletedReply.createdAt,
+              content: '**balasan telah dihapus**',
+            },
+          ],
         },
       ],
     });

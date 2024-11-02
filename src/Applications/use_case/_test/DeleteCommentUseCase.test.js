@@ -9,6 +9,7 @@ describe('DeleteCommentUseCase', () => {
     const mockCommentRepository = new CommentRepository();
 
     mockCommentRepository.getCommentById = jest.fn().mockResolvedValue({ owner: 'user-123' });
+    mockCommentRepository.verifyCommentAvailability = jest.fn().mockResolvedValue();
     mockCommentRepository.verifyCommentOwner = jest.fn().mockResolvedValue();
     mockCommentRepository.deleteCommentById = jest.fn().mockResolvedValue();
 

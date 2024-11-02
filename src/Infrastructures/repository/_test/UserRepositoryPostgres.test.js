@@ -129,7 +129,7 @@ describe('UserRepositoryPostgres', () => {
   });
 
   describe('getUserById', () => {
-    it('should throw InvariantError when user not found', async () => {
+    it('should throw NotFoundError when user not found', async () => {
       // Arrange
       const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
 
@@ -151,6 +151,27 @@ describe('UserRepositoryPostgres', () => {
       expect(user.id).toEqual('user-321');
       expect(user.username).toEqual('dicoding');
       expect(user.fullname).toEqual('dicoding indonesia');
+    });
+  });
+
+  describe('verifyUserAvailability', () => {
+    it('should throw NotFoundError when user not found', async () => {
+      // Arrange
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
+
+      // Action & Assert
+      await expect(userRepositoryPostgres.verifyUserAvailability('user-123'))
+        .rejects
+        .toThrowError(NotFoundError);
+    });
+
+    it('should not throw NotFoundError when user is found', async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, {});
+
+      // Action & Assert
+      await expect(userRepositoryPostgres.verifyUserAvailability('user-123')).resolves.not.toThrowError(NotFoundError);
     });
   });
 });

@@ -1,8 +1,8 @@
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
+const AddedThread = require('../../../Domains/threads/entities/AddedThread');
 const NewThread = require('../../../Domains/threads/entities/NewThread');
-const Thread = require('../../../Domains/threads/entities/Thread');
 const pool = require('../../database/postgres/pool');
 const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres');
 
@@ -55,13 +55,10 @@ describe('ThreadRepository postgres', () => {
       const addedThread = await threadRepository.addThread('user-123', newThread);
 
       // Assert
-      expect(addedThread).toStrictEqual(new Thread({
+      expect(addedThread).toStrictEqual(new AddedThread({
         id: 'thread-123',
         title: 'new title',
-        body: 'lorem ipsum',
         user_id: 'user-123',
-        created_at: addedThread.createdAt,
-        updated_at: addedThread.updatedAt,
       }));
     });
   });
@@ -96,6 +93,34 @@ describe('ThreadRepository postgres', () => {
 
       // Action & Assert
       await expect(threadRepository.getThreadById('invalid-thread')).rejects.toThrowError(NotFoundError);
+    });
+  });
+
+  describe('verifyThreadAvailability function', () => {
+    it('should throw NotFoundError when thread is not found', async () => {
+      // Arrange
+      const threadRepository = new ThreadRepositoryPostgres(pool, () => '123');
+
+      await UsersTableTestHelper.addUser({ id: 'user-123', username: 'userA' });
+
+      // Action & Assert
+      await expect(threadRepository.verifyThreadAvailability('invalid-thread')).rejects.toThrowError(NotFoundError);
+    });
+
+    it('should not throw NotFoundError when thread is found', async () => {
+      // Arrange
+      const threadRepository = new ThreadRepositoryPostgres(pool, () => '123');
+
+      await UsersTableTestHelper.addUser({ id: 'user-123', username: 'userA' });
+      await ThreadsTableTestHelper.addThread({
+        id: 'thread-123',
+        title: 'Thread Title',
+        body: 'Thread Body',
+        owner: 'user-123',
+      });
+
+      // Action & Assert
+      await expect(threadRepository.verifyThreadAvailability('thread-123')).resolves.not.toThrowError(NotFoundError);
     });
   });
 });
