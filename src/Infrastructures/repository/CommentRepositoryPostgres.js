@@ -58,7 +58,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     };
 
     const result = await this._pool.query(query);
-    const comments = result.rows.map((row) => ({ ...new Comment(row) }));
+    const comments = result.rows.map((row) => (new Comment(row)));
 
     return comments;
   }

@@ -244,7 +244,10 @@ describe('Comment entities', () => {
     expect(comment.threadId).toEqual('thread-123');
     expect(comment.parentCommentId).toEqual(null);
     expect(comment.createdAt).toBeInstanceOf(Date);
+    expect(comment.createdAt).toEqual(payload.created_at);
     expect(comment.updatedAt).toBeInstanceOf(Date);
+    expect(comment.updatedAt).toEqual(payload.updated_at);
+    expect(comment.isDelete).toEqual(false);
     expect(comment.username).toEqual('dicoding');
   });
 
@@ -276,6 +279,7 @@ describe('Comment entities', () => {
     expect(comment.createdAt).toEqual(payload.created_at);
     expect(comment.updatedAt).toBeInstanceOf(Date);
     expect(comment.updatedAt).toEqual(payload.updated_at);
+    expect(comment.isDelete).toEqual(true);
     expect(comment.username).toEqual('dicoding');
   });
 });

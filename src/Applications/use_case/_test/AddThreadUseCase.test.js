@@ -1,5 +1,5 @@
+const AddedThread = require('../../../Domains/threads/entities/AddedThread');
 const NewThread = require('../../../Domains/threads/entities/NewThread');
-const Thread = require('../../../Domains/threads/entities/Thread');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const RegisteredUser = require('../../../Domains/users/entities/RegisteredUser');
 const UserRepository = require('../../../Domains/users/UserRepository');
@@ -37,7 +37,7 @@ describe('AddThreadUseCase', () => {
       title: 'New thread',
       body: 'lorem ipsum',
     };
-    const mockThread = new Thread({
+    const mockThread = new AddedThread({
       id: 'thread-123',
       user_id: 'user-123',
       title: useCasePayload.title,
@@ -68,14 +68,15 @@ describe('AddThreadUseCase', () => {
     const addedThread = await addThreadUseCase.execute('user-123', useCasePayload);
 
     // Assert
-    expect(addedThread).toStrictEqual(new Thread({
+    expect(addedThread).toStrictEqual(new AddedThread({
       id: 'thread-123',
       user_id: 'user-123',
-      title: useCasePayload.title,
-      body: useCasePayload.body,
-      created_at: mockThread.createdAt,
-      updated_at: mockThread.updatedAt,
+      title: 'New thread',
+      body: 'lorem ipsum',
+      created_at: new Date(mockThread.createdAt),
+      updated_at: new Date(mockThread.updatedAt),
       username: 'dicoding',
+
     }));
 
     expect(mockThreadRepository.addThread).toHaveBeenCalledTimes(1);

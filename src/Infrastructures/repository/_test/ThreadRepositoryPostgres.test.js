@@ -3,6 +3,7 @@ const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const AddedThread = require('../../../Domains/threads/entities/AddedThread');
 const NewThread = require('../../../Domains/threads/entities/NewThread');
+const Thread = require('../../../Domains/threads/entities/Thread');
 const pool = require('../../database/postgres/pool');
 const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres');
 
@@ -102,11 +103,17 @@ describe('ThreadRepository postgres', () => {
       const thread = await threadRepository.getThreadById('thread-123');
 
       // Assert
-      expect(thread).toBeDefined();
-      expect(thread.id).toBe('thread-123');
-      expect(thread.title).toBe('Thread Title');
-      expect(thread.body).toBe('Thread Body');
-      expect(thread.username).toBe('userA');
+      expect(thread).toStrictEqual(new Thread({
+        id: 'thread-123',
+        title: 'Thread Title',
+        body: 'Thread Body',
+        user_id: 'user-123',
+        username: 'userA',
+        created_at: thread.createdAt,
+        updated_at: thread.updatedAt,
+      }));
+      expect(thread.createdAt).toBeInstanceOf(Date);
+      expect(thread.updatedAt).toBeInstanceOf(Date);
     });
 
     it('should throw NotFoundError when thread is not found', async () => {

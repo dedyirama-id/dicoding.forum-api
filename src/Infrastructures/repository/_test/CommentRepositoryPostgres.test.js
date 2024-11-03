@@ -137,18 +137,28 @@ describe('CommentRepositoryPostgres', () => {
       const fakeIdGenerator = () => '123';
       const commentRepository = new CommentRepositoryPostgres(pool, fakeIdGenerator);
 
-      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await UsersTableTestHelper.addUser({ id: 'user-123', username: 'dicoding' });
       await ThreadsTableTestHelper.addThread({ id: 'thread-123' });
 
       await commentRepository.addComment('thread-123', 'user-123', newComment);
 
       // Action
-      const getComment = await commentRepository.getCommentById('comment-123');
+      const comment = await commentRepository.getCommentById('comment-123');
 
       // Assert
-      expect(getComment).toBeDefined();
-      expect(getComment.id).toBe('comment-123');
-      expect(getComment.isDelete).toBe(false);
+      expect(comment).toStrictEqual(new Comment({
+        id: 'comment-123',
+        content: 'lorem ipsum',
+        user_id: 'user-123',
+        thread_id: 'thread-123',
+        parent_comment_id: null,
+        created_at: comment.createdAt,
+        updated_at: comment.updatedAt,
+        is_delete: false,
+        username: 'dicoding',
+      }));
+      expect(comment.createdAt).toBeInstanceOf(Date);
+      expect(comment.updatedAt).toBeInstanceOf(Date);
     });
 
     it('should return deleted comment properly', async () => {
@@ -183,6 +193,8 @@ describe('CommentRepositoryPostgres', () => {
         is_delete: true,
         username: 'dicoding',
       }));
+      expect(comment.createdAt).toBeInstanceOf(Date);
+      expect(comment.updatedAt).toBeInstanceOf(Date);
     });
   });
 
@@ -212,17 +224,47 @@ describe('CommentRepositoryPostgres', () => {
 
       // Assert
       expect(comments).toHaveLength(3);
-      expect(comments[0].id).toBe('comment-123');
-      expect(comments[0].content).toBe('comment 1');
-      expect(comments[0].username).toBe('userA');
+      expect(comments[0]).toStrictEqual(new Comment({
+        id: 'comment-123',
+        content: 'comment 1',
+        user_id: 'user-123',
+        thread_id: 'thread-123',
+        parent_comment_id: null,
+        created_at: comments[0].createdAt,
+        updated_at: comments[0].updatedAt,
+        is_delete: false,
+        username: 'userA',
+      }));
+      expect(comments[0].createdAt).toBeInstanceOf(Date);
+      expect(comments[0].updatedAt).toBeInstanceOf(Date);
 
-      expect(comments[1].id).toBe('comment-456');
-      expect(comments[1].content).toBe('reply to comment 1');
-      expect(comments[1].username).toBe('userB');
+      expect(comments[1]).toStrictEqual(new Comment({
+        id: 'comment-456',
+        content: 'reply to comment 1',
+        user_id: 'user-456',
+        thread_id: 'thread-123',
+        parent_comment_id: 'comment-123',
+        created_at: comments[1].createdAt,
+        updated_at: comments[1].updatedAt,
+        is_delete: false,
+        username: 'userB',
+      }));
+      expect(comments[1].createdAt).toBeInstanceOf(Date);
+      expect(comments[1].updatedAt).toBeInstanceOf(Date);
 
-      expect(comments[2].id).toBe('comment-789');
-      expect(comments[2].content).toBe('another reply to comment 1');
-      expect(comments[2].username).toBe('userC');
+      expect(comments[2]).toStrictEqual(new Comment({
+        id: 'comment-789',
+        content: 'another reply to comment 1',
+        user_id: 'user-789',
+        thread_id: 'thread-123',
+        parent_comment_id: 'comment-123',
+        created_at: comments[2].createdAt,
+        updated_at: comments[2].updatedAt,
+        is_delete: false,
+        username: 'userC',
+      }));
+      expect(comments[2].createdAt).toBeInstanceOf(Date);
+      expect(comments[2].updatedAt).toBeInstanceOf(Date);
     });
 
     it('should return an empty array when there are no comments for the thread id', async () => {
@@ -271,7 +313,7 @@ describe('CommentRepositoryPostgres', () => {
       });
 
       // Action & Assert
-      await expect(commentRepository.verifyCommentOwner('comment-123', 'user-123')).resolves.not.toThrowError();
+      await expect(commentRepository.verifyCommentOwner('comment-123', 'user-123')).resolves.not.toThrowError(AuthorizationError);
     });
   });
 
@@ -300,7 +342,7 @@ describe('CommentRepositoryPostgres', () => {
       });
 
       // Action & Assert
-      await expect(commentRepository.verifyCommentAvailability('comment-123')).resolves.not.toThrowError();
+      await expect(commentRepository.verifyCommentAvailability('comment-123')).resolves.not.toThrowError(NotFoundError);
     });
   });
 });

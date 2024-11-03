@@ -1,5 +1,5 @@
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
-const Comment = require('../../../Domains/comments/entities/Comment');
+const AddedComment = require('../../../Domains/comments/entities/AddedComment');
 const NewComment = require('../../../Domains/comments/entities/NewComment');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const UserRepository = require('../../../Domains/users/UserRepository');
@@ -97,7 +97,7 @@ describe('AddCommentUseCase', () => {
     const useCasePayload = {
       content: 'lorem ipsum',
     };
-    const mockComment = new Comment({
+    const mockComment = new AddedComment({
       id: 'comment-123',
       content: 'lorem ipsum',
       user_id: 'user-123',
@@ -128,7 +128,7 @@ describe('AddCommentUseCase', () => {
     const addedComment = await addCommentUseCase.execute('thread-123', 'user-123', useCasePayload);
 
     // Assert
-    expect(addedComment).toStrictEqual(new Comment({
+    expect(addedComment).toStrictEqual(new AddedComment({
       id: 'comment-123',
       content: 'lorem ipsum',
       user_id: 'user-123',
