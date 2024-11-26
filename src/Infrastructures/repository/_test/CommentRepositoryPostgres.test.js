@@ -1,5 +1,6 @@
 const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
+const UserCommentLikesTableTestHelper = require('../../../../tests/UserCommentLlikesTableTestHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
@@ -14,6 +15,7 @@ describe('CommentRepositoryPostgres', () => {
     await CommentsTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
+    await UserCommentLikesTableTestHelper.cleanTable();
   });
 
   afterAll(async () => {
@@ -24,6 +26,7 @@ describe('CommentRepositoryPostgres', () => {
     await CommentsTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
+    await UserCommentLikesTableTestHelper.cleanTable();
   });
 
   describe('addComment function', () => {
@@ -156,6 +159,7 @@ describe('CommentRepositoryPostgres', () => {
         updated_at: comment.updatedAt,
         is_delete: false,
         username: 'dicoding',
+        like_count: 0,
       }));
       expect(comment.createdAt).toBeInstanceOf(Date);
       expect(comment.updatedAt).toBeInstanceOf(Date);
@@ -192,6 +196,7 @@ describe('CommentRepositoryPostgres', () => {
         updated_at: comment.updatedAt,
         is_delete: true,
         username: 'dicoding',
+        like_count: 0,
       }));
       expect(comment.createdAt).toBeInstanceOf(Date);
       expect(comment.updatedAt).toBeInstanceOf(Date);
@@ -234,6 +239,7 @@ describe('CommentRepositoryPostgres', () => {
         updated_at: comments[0].updatedAt,
         is_delete: false,
         username: 'userA',
+        like_count: 0,
       }));
       expect(comments[0].createdAt).toBeInstanceOf(Date);
       expect(comments[0].updatedAt).toBeInstanceOf(Date);
@@ -248,6 +254,7 @@ describe('CommentRepositoryPostgres', () => {
         updated_at: comments[1].updatedAt,
         is_delete: false,
         username: 'userB',
+        like_count: 0,
       }));
       expect(comments[1].createdAt).toBeInstanceOf(Date);
       expect(comments[1].updatedAt).toBeInstanceOf(Date);
@@ -262,6 +269,7 @@ describe('CommentRepositoryPostgres', () => {
         updated_at: comments[2].updatedAt,
         is_delete: false,
         username: 'userC',
+        like_count: 0,
       }));
       expect(comments[2].createdAt).toBeInstanceOf(Date);
       expect(comments[2].updatedAt).toBeInstanceOf(Date);
@@ -343,6 +351,121 @@ describe('CommentRepositoryPostgres', () => {
 
       // Action & Assert
       await expect(commentRepository.verifyCommentAvailability('comment-123')).resolves.not.toThrowError(NotFoundError);
+    });
+  });
+
+  describe('verifyIsCommentLiked function', () => {
+    it('should return false when user has not been liked the comment', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const commentRepository = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123' });
+
+      // Action & Assert
+      await expect(commentRepository.verifyIsCommentLiked('comment-123', 'user-123')).resolves.toBe(false);
+    });
+
+    it('should return true when user has been liked the comment', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const commentRepository = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123' });
+      await UserCommentLikesTableTestHelper.addLike({ userId: 'user-123', commentId: 'comment-123' });
+
+      // Action & Assert
+      await expect(commentRepository.verifyIsCommentLiked('comment-123', 'user-123')).resolves.toBe(true);
+    });
+  });
+
+  describe('addCommentLikeById function', () => {
+    it('should persist new like record correctly', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const commentRepository = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', userId: 'user-123' });
+
+      // Action
+      await commentRepository.addCommentLikeById('comment-123', 'user-123');
+
+      // Assert
+      const addedLike = await UserCommentLikesTableTestHelper.findCommentLikeByCommentId('comment-123');
+      expect(addedLike).toHaveLength(1);
+      expect(addedLike[0]).toStrictEqual({
+        id: 'like-123',
+        user_id: 'user-123',
+        comment_id: 'comment-123',
+      });
+    });
+
+    it('should throw error when userId is invalid', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const commentRepository = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', userId: 'user-123' });
+
+      // Action & Assert
+      await expect(commentRepository.addCommentLikeById('comment-123', 'user-456')).rejects.toThrowError();
+    });
+
+    it('should throw error when commentId is invalid', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const commentRepository = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', userId: 'user-123' });
+
+      // Action & Assert
+      await expect(commentRepository.addCommentLikeById('comment-456', 'user-123')).rejects.toThrowError();
+    });
+  });
+
+  describe('deleteCommentLikeById function', () => {
+    it('should delete like record correctly', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const commentRepository = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', userId: 'user-123' });
+      await UserCommentLikesTableTestHelper.addLike({ commentId: 'comment-123', userId: 'user-123' });
+
+      const beforeDelete = await UserCommentLikesTableTestHelper.findCommentLikeByCommentId('comment-123');
+
+      // Action
+      await commentRepository.deleteCommentLikeById('comment-123', 'user-123');
+
+      // Assert
+      expect(beforeDelete).toHaveLength(1);
+      const afterDelete = await UserCommentLikesTableTestHelper.findCommentLikeByCommentId('comment-123');
+      expect(afterDelete).toHaveLength(0);
+    });
+
+    it('should throw NotFoundError when like record is not found', async () => {
+      // Arrange
+      const fakeIdGenerator = () => '123';
+      const commentRepository = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+      await UsersTableTestHelper.addUser({ id: 'user-123' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123' });
+
+      // Action & Assert
+      await expect(commentRepository.deleteCommentLikeById('comment-123', 'user-123')).rejects.toThrowError(NotFoundError);
     });
   });
 });

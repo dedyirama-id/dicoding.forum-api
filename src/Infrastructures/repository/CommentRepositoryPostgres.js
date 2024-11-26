@@ -31,11 +31,14 @@ class CommentRepositoryPostgres extends CommentRepository {
       text: `
         SELECT 
           c.*,
-          u.username
+          u.username,
+          COALESCE(COUNT(l.comment_id), 0)::INTEGER AS like_count
         FROM comments c 
         JOIN users u ON c.user_id = u.id
+        LEFT JOIN user_comment_likes l ON c.id = l.comment_id
         WHERE c.id = $1
-        `,
+        GROUP BY c.id, u.id
+      `,
       values: [id],
     };
     const result = await this._pool.query(query);
@@ -46,14 +49,17 @@ class CommentRepositoryPostgres extends CommentRepository {
   async getAllCommentsByThreadId(threadId) {
     const query = {
       text: `
-        SELECT 
-          c.*,
-          u.username
-        FROM comments c
-        JOIN users u ON c.user_id = u.id
-        WHERE c.thread_id = $1
-        ORDER BY c.created_at ASC
-      `,
+      SELECT 
+        c.*,
+        u.username,
+        COALESCE(COUNT(l.comment_id), 0)::INTEGER AS like_count
+      FROM comments c
+      JOIN users u ON c.user_id = u.id
+      LEFT JOIN user_comment_likes l ON c.id = l.comment_id
+      WHERE c.thread_id = $1
+      GROUP BY c.id, u.id
+      ORDER BY c.created_at ASC
+    `,
       values: [threadId],
     };
 
@@ -95,6 +101,45 @@ class CommentRepositoryPostgres extends CommentRepository {
 
     if (result.rowCount === 0) {
       throw new NotFoundError('komentar tidak ditemukan');
+    }
+  }
+
+  async verifyIsCommentLiked(commentId, userId) {
+    const query = {
+      text: 'SELECT * FROM user_comment_likes WHERE comment_id = $1 AND user_id = $2',
+      values: [commentId, userId],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (result.rowCount === 0) {
+      return false;
+    }
+
+    return true;
+  }
+
+  async addCommentLikeById(commentId, userId) {
+    const id = `like-${this._idGenerator()}`;
+
+    const query = {
+      text: 'INSERT INTO user_comment_likes VALUES($1, $2, $3) RETURNING *',
+      values: [id, userId, commentId],
+    };
+
+    await this._pool.query(query);
+  }
+
+  async deleteCommentLikeById(commentId, userId) {
+    const query = {
+      text: 'DELETE FROM user_comment_likes WHERE comment_id = $1 AND user_id = $2',
+      values: [commentId, userId],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (result.rowCount === 0) {
+      throw new NotFoundError('comment record not found');
     }
   }
 }
