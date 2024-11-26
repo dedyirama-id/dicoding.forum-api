@@ -11,6 +11,7 @@ class Comment {
     this.updatedAt = payload.updated_at;
     this.isDelete = payload.is_delete;
     this.username = payload.username;
+    this.likeCount = payload.like_count;
   }
 
   _verifyPayload(payload) {
@@ -24,6 +25,7 @@ class Comment {
       created_at: createdAt,
       updated_at: updatedAt,
       is_delete: isDelete,
+      like_count: likeCount,
     } = payload;
 
     if (
@@ -36,6 +38,7 @@ class Comment {
       || !username
       || isDelete === undefined
       || isDelete === null
+      || likeCount === undefined
     ) {
       throw new Error('COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
     }
@@ -50,6 +53,7 @@ class Comment {
       || updatedAt instanceof Date === false
       || typeof isDelete !== 'boolean'
       || typeof username !== 'string'
+      || typeof likeCount !== 'number'
     ) {
       throw new Error('COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }

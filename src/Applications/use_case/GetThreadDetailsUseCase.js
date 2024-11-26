@@ -21,6 +21,7 @@ class GetThreadDetailsUseCase {
           username: reply.username,
           date: reply.createdAt,
           content: reply.isDelete ? '**balasan telah dihapus**' : reply.content,
+          likeCount: reply.likeCount,
         }));
 
       return {
@@ -29,6 +30,7 @@ class GetThreadDetailsUseCase {
         date: comment.createdAt,
         content: comment.content,
         replies: commentReplies,
+        likeCount: comment.likeCount,
       };
     });
 
