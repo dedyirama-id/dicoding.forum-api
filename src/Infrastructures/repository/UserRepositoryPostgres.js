@@ -34,7 +34,7 @@ class UserRepositoryPostgres extends UserRepository {
 
     const result = await this._pool.query(query);
 
-    return new RegisteredUser({ ...result.rows[0] });
+    return new RegisteredUser(result.rows[0]);
   }
 
   async getPasswordByUsername(username) {
@@ -80,7 +80,7 @@ class UserRepositoryPostgres extends UserRepository {
       throw new NotFoundError('user tidak ditemukan');
     }
 
-    return new RegisteredUser({ ...result.rows[0] });
+    return new RegisteredUser(result.rows[0]);
   }
 
   async verifyUserAvailability(id) {

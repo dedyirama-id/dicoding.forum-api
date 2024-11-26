@@ -23,7 +23,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     };
     const result = await this._pool.query(query);
 
-    return new AddedComment({ ...result.rows[0] });
+    return new AddedComment(result.rows[0]);
   }
 
   async getCommentById(id) {
@@ -43,7 +43,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     };
     const result = await this._pool.query(query);
 
-    return new Comment({ ...result.rows[0] });
+    return new Comment(result.rows[0]);
   }
 
   async getAllCommentsByThreadId(threadId) {
